@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
+import Image from "next/image";
 
 export default function LandingPage() {
   return (
@@ -17,11 +18,10 @@ export default function LandingPage() {
         <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-black/50 backdrop-blur-2xl">
           <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="relative">
-                <div className="h-7 w-7 rounded-md bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500" />
-                <div className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-green-400 animate-pulse" />
-              </div>
-              <span className="font-bold text-base tracking-tight">Web3 CRM</span>
+              <svg width="22" height="22" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M28.7 0H12.8L0 12.8V28.7L12.8 41.5H28.7L41.5 28.7V12.8L28.7 0ZM15 28.9L6.80002 20.7L15 12.5C18.1 9.4 23.2 9.4 26.3 12.5L34.5 20.7L26.3 28.9C23.2 32 18.2 32 15 28.9Z" fill="white"/>
+              </svg>
+              <span className="font-semibold text-sm tracking-wide" style={{ fontFamily: 'var(--font-geist-sans)' }}>Ownbase</span>
             </div>
             <nav className="hidden md:flex items-center gap-6">
               <a href="#features" className="text-sm text-zinc-400 hover:text-white transition">Features</a>
@@ -346,8 +346,10 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-4 gap-12 mb-12">
               <div>
                 <div className="flex items-center gap-2 mb-4">
-                  <div className="h-6 w-6 rounded-md bg-gradient-to-br from-purple-500 to-blue-500" />
-                  <span className="font-bold text-sm">Web3 CRM</span>
+                  <svg width="20" height="20" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M28.7 0H12.8L0 12.8V28.7L12.8 41.5H28.7L41.5 28.7V12.8L28.7 0ZM15 28.9L6.80002 20.7L15 12.5C18.1 9.4 23.2 9.4 26.3 12.5L34.5 20.7L26.3 28.9C23.2 32 18.2 32 15 28.9Z" fill="white"/>
+                  </svg>
+                  <span className="font-semibold text-sm tracking-wide" style={{ fontFamily: 'var(--font-geist-sans)' }}>Ownbase</span>
                 </div>
                 <p className="text-xs text-zinc-600">
                   Customer data, customer owned.
@@ -377,7 +379,7 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="pt-8 border-t border-white/5 flex items-center justify-between">
-              <p className="text-xs text-zinc-600">© 2025 Web3 CRM. Built on Polkadot.</p>
+              <p className="text-xs text-zinc-600">© 2025 Ownbase. Built on Polkadot.</p>
               <div className="text-[10px] text-zinc-700 tracking-wider uppercase">Hackathon Project</div>
             </div>
           </div>
