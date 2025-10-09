@@ -42,28 +42,28 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
-      url: "#",
-      icon: IconListDetails,
+      title: "Contacts",
+      url: "/contacts",
+      icon: IconUsers,
     },
     {
-      title: "Analytics",
-      url: "#",
+      title: "Deals",
+      url: "/deals",
       icon: IconChartBar,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
+      title: "Activities",
+      url: "/activities",
+      icon: IconListDetails,
     },
     {
-      title: "Team",
-      url: "#",
-      icon: IconUsers,
+      title: "Tasks",
+      url: "/tasks",
+      icon: IconFolder,
     },
   ],
   navClouds: [
@@ -133,19 +133,9 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
-      url: "#",
+      name: "Data Access",
+      url: "/data-access",
       icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 }
@@ -160,9 +150,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+              <a href="/">
+                <svg width="20" height="20" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="!size-5">
+                  <path d="M28.7 0H12.8L0 12.8V28.7L12.8 41.5H28.7L41.5 28.7V12.8L28.7 0ZM15 28.9L6.80002 20.7L15 12.5C18.1 9.4 23.2 9.4 26.3 12.5L34.5 20.7L26.3 28.9C23.2 32 18.2 32 15 28.9Z" fill="currentColor"/>
+                </svg>
+                <span className="text-base font-semibold">Ownbase</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -171,7 +163,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavMain items={data.navMain} />
         <NavDocuments items={data.documents} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
