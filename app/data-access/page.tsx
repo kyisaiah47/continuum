@@ -29,14 +29,6 @@ export default function DataAccessPage() {
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-          {/* Actions */}
-          <div className="flex items-center justify-end">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Request
-            </Button>
-          </div>
-
           {/* Info Card */}
           <Card className="p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20">
             <div className="flex items-start gap-4">

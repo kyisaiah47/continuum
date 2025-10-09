@@ -73,14 +73,6 @@ export default function DealsPage() {
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-          {/* Actions */}
-          <div className="flex items-center justify-end">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Deal
-            </Button>
-          </div>
-
           {/* Stats */}
           <div className="grid gap-4 md:grid-cols-3">
             <Card className="p-4">

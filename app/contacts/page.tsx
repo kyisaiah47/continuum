@@ -29,14 +29,6 @@ export default function ContactsPage() {
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-          {/* Actions */}
-          <div className="flex items-center justify-end">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              Add Contact
-            </Button>
-          </div>
-
           {/* Search */}
           <div className="flex items-center gap-4">
             <div className="relative flex-1">

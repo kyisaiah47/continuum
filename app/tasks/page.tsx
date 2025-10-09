@@ -31,14 +31,6 @@ export default function TasksPage() {
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-          {/* Actions */}
-          <div className="flex items-center justify-end">
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              New Task
-            </Button>
-          </div>
-
           {/* Tabs */}
           <Tabs defaultValue="pending" className="w-full">
             <TabsList>
