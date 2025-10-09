@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================
 -- CONTACTS TABLE
 -- ============================================
-CREATE TABLE contacts (
+CREATE TABLE ownbase_contacts (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
 
@@ -35,17 +35,17 @@ CREATE TABLE contacts (
 );
 
 -- Indexes for contacts
-CREATE INDEX idx_contacts_user_id ON contacts(user_id);
-CREATE INDEX idx_contacts_wallet ON contacts(wallet_address);
-CREATE INDEX idx_contacts_email ON contacts(email);
+CREATE INDEX idx_ownbase_contacts_user_id ON ownbase_contacts(user_id);
+CREATE INDEX idx_ownbase_contacts_wallet ON ownbase_contacts(wallet_address);
+CREATE INDEX idx_ownbase_contacts_email ON ownbase_contacts(email);
 
 -- ============================================
 -- DEALS TABLE
 -- ============================================
-CREATE TABLE deals (
+CREATE TABLE ownbase_deals (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  contact_id UUID REFERENCES contacts(id) ON DELETE SET NULL,
+  contact_id UUID REFERENCES ownbase_contacts(id) ON DELETE SET NULL,
 
   -- Deal Info
   title TEXT NOT NULL,
@@ -74,19 +74,19 @@ CREATE TABLE deals (
 );
 
 -- Indexes for deals
-CREATE INDEX idx_deals_user_id ON deals(user_id);
-CREATE INDEX idx_deals_contact_id ON deals(contact_id);
-CREATE INDEX idx_deals_stage ON deals(stage);
-CREATE INDEX idx_deals_status ON deals(status);
+CREATE INDEX idx_ownbase_deals_user_id ON ownbase_deals(user_id);
+CREATE INDEX idx_ownbase_deals_contact_id ON ownbase_deals(contact_id);
+CREATE INDEX idx_ownbase_deals_stage ON ownbase_deals(stage);
+CREATE INDEX idx_ownbase_deals_status ON ownbase_deals(status);
 
 -- ============================================
 -- ACTIVITIES TABLE
 -- ============================================
-CREATE TABLE activities (
+CREATE TABLE ownbase_activities (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  contact_id UUID REFERENCES contacts(id) ON DELETE CASCADE,
-  deal_id UUID REFERENCES deals(id) ON DELETE CASCADE,
+  contact_id UUID REFERENCES ownbase_contacts(id) ON DELETE CASCADE,
+  deal_id UUID REFERENCES ownbase_deals(id) ON DELETE CASCADE,
 
   -- Activity Info
   type TEXT NOT NULL,
@@ -102,19 +102,19 @@ CREATE TABLE activities (
 );
 
 -- Indexes for activities
-CREATE INDEX idx_activities_user_id ON activities(user_id);
-CREATE INDEX idx_activities_contact_id ON activities(contact_id);
-CREATE INDEX idx_activities_deal_id ON activities(deal_id);
-CREATE INDEX idx_activities_date ON activities(activity_date DESC);
+CREATE INDEX idx_ownbase_activities_user_id ON ownbase_activities(user_id);
+CREATE INDEX idx_ownbase_activities_contact_id ON ownbase_activities(contact_id);
+CREATE INDEX idx_ownbase_activities_deal_id ON ownbase_activities(deal_id);
+CREATE INDEX idx_ownbase_activities_date ON ownbase_activities(activity_date DESC);
 
 -- ============================================
 -- TASKS TABLE
 -- ============================================
-CREATE TABLE tasks (
+CREATE TABLE ownbase_tasks (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-  contact_id UUID REFERENCES contacts(id) ON DELETE CASCADE,
-  deal_id UUID REFERENCES deals(id) ON DELETE CASCADE,
+  contact_id UUID REFERENCES ownbase_contacts(id) ON DELETE CASCADE,
+  deal_id UUID REFERENCES ownbase_deals(id) ON DELETE CASCADE,
 
   -- Task Info
   title TEXT NOT NULL,
@@ -133,16 +133,16 @@ CREATE TABLE tasks (
 );
 
 -- Indexes for tasks
-CREATE INDEX idx_tasks_user_id ON tasks(user_id);
-CREATE INDEX idx_tasks_contact_id ON tasks(contact_id);
-CREATE INDEX idx_tasks_deal_id ON tasks(deal_id);
-CREATE INDEX idx_tasks_due_date ON tasks(due_date);
-CREATE INDEX idx_tasks_completed ON tasks(completed);
+CREATE INDEX idx_ownbase_tasks_user_id ON ownbase_tasks(user_id);
+CREATE INDEX idx_ownbase_tasks_contact_id ON ownbase_tasks(contact_id);
+CREATE INDEX idx_ownbase_tasks_deal_id ON ownbase_tasks(deal_id);
+CREATE INDEX idx_ownbase_tasks_due_date ON ownbase_tasks(due_date);
+CREATE INDEX idx_ownbase_tasks_completed ON ownbase_tasks(completed);
 
 -- ============================================
 -- DATA ACCESS REQUESTS TABLE (Web3)
 -- ============================================
-CREATE TABLE data_access_requests (
+CREATE TABLE ownbase_data_access_requests (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
 
   -- Parties
@@ -174,9 +174,9 @@ CREATE TABLE data_access_requests (
 );
 
 -- Indexes for data access requests
-CREATE INDEX idx_access_requests_business ON data_access_requests(business_user_id);
-CREATE INDEX idx_access_requests_customer ON data_access_requests(customer_wallet);
-CREATE INDEX idx_access_requests_status ON data_access_requests(status);
+CREATE INDEX idx_ownbase_access_requests_business ON ownbase_data_access_requests(business_user_id);
+CREATE INDEX idx_ownbase_access_requests_customer ON ownbase_data_access_requests(customer_wallet);
+CREATE INDEX idx_ownbase_access_requests_status ON ownbase_data_access_requests(status);
 
 -- ============================================
 -- FUNCTIONS & TRIGGERS
@@ -192,16 +192,16 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Apply updated_at triggers
-CREATE TRIGGER update_contacts_updated_at BEFORE UPDATE ON contacts
+CREATE TRIGGER update_ownbase_contacts_updated_at BEFORE UPDATE ON ownbase_contacts
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_deals_updated_at BEFORE UPDATE ON deals
+CREATE TRIGGER update_ownbase_deals_updated_at BEFORE UPDATE ON ownbase_deals
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_tasks_updated_at BEFORE UPDATE ON tasks
+CREATE TRIGGER update_ownbase_tasks_updated_at BEFORE UPDATE ON ownbase_tasks
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_data_access_requests_updated_at BEFORE UPDATE ON data_access_requests
+CREATE TRIGGER update_ownbase_data_access_requests_updated_at BEFORE UPDATE ON ownbase_data_access_requests
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Function to auto-mark tasks as completed
@@ -217,7 +217,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER task_completed_trigger BEFORE UPDATE ON tasks
+CREATE TRIGGER task_completed_trigger BEFORE UPDATE ON ownbase_tasks
   FOR EACH ROW EXECUTE FUNCTION set_task_completed_at();
 
 -- Function to auto-mark deals as closed
@@ -233,5 +233,5 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER deal_closed_trigger BEFORE UPDATE ON deals
+CREATE TRIGGER deal_closed_trigger BEFORE UPDATE ON ownbase_deals
   FOR EACH ROW EXECUTE FUNCTION set_deal_closed_at();

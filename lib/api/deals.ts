@@ -2,7 +2,7 @@ import { supabase, type Deal } from '../supabase-client';
 
 export async function getDeals() {
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .select('*')
     .order('created_at', { ascending: false });
 
@@ -12,7 +12,7 @@ export async function getDeals() {
 
 export async function getDealById(id: string) {
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .select('*')
     .eq('id', id)
     .single();
@@ -23,7 +23,7 @@ export async function getDealById(id: string) {
 
 export async function getDealsByStage(stage: Deal['stage']) {
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .select('*')
     .eq('stage', stage)
     .order('created_at', { ascending: false });
@@ -38,7 +38,7 @@ export async function createDeal(deal: Omit<Deal, 'id' | 'created_at' | 'updated
   if (!user) throw new Error('Not authenticated');
 
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .insert([{ ...deal, user_id: user.id }])
     .select()
     .single();
@@ -49,7 +49,7 @@ export async function createDeal(deal: Omit<Deal, 'id' | 'created_at' | 'updated
 
 export async function updateDeal(id: string, updates: Partial<Deal>) {
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .update(updates)
     .eq('id', id)
     .select()
@@ -65,7 +65,7 @@ export async function updateDealStage(id: string, stage: Deal['stage']) {
 
 export async function deleteDeal(id: string) {
   const { error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .delete()
     .eq('id', id);
 
@@ -74,7 +74,7 @@ export async function deleteDeal(id: string) {
 
 export async function getDealsByContactId(contactId: string) {
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .select('*')
     .eq('contact_id', contactId)
     .order('created_at', { ascending: false });
@@ -86,10 +86,10 @@ export async function getDealsByContactId(contactId: string) {
 // Get deals with contact information
 export async function getDealsWithContacts() {
   const { data, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .select(`
       *,
-      contact:contacts(
+      contact:ownbase_contacts(
         id,
         name,
         email,
@@ -106,7 +106,7 @@ export async function getDealsWithContacts() {
 // Get pipeline statistics
 export async function getPipelineStats() {
   const { data: deals, error } = await supabase
-    .from('deals')
+    .from('ownbase_deals')
     .select('stage, value, status');
 
   if (error) throw error;

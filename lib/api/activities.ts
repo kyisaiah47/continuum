@@ -2,7 +2,7 @@ import { supabase, type Activity } from '../supabase-client';
 
 export async function getActivities() {
   const { data, error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .select('*')
     .order('activity_date', { ascending: false });
 
@@ -12,7 +12,7 @@ export async function getActivities() {
 
 export async function getActivityById(id: string) {
   const { data, error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .select('*')
     .eq('id', id)
     .single();
@@ -23,7 +23,7 @@ export async function getActivityById(id: string) {
 
 export async function getActivitiesByContactId(contactId: string) {
   const { data, error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .select('*')
     .eq('contact_id', contactId)
     .order('activity_date', { ascending: false });
@@ -34,7 +34,7 @@ export async function getActivitiesByContactId(contactId: string) {
 
 export async function getActivitiesByDealId(dealId: string) {
   const { data, error} = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .select('*')
     .eq('deal_id', dealId)
     .order('activity_date', { ascending: false });
@@ -48,7 +48,7 @@ export async function createActivity(activity: Omit<Activity, 'id' | 'created_at
   if (!user) throw new Error('Not authenticated');
 
   const { data, error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .insert([{ ...activity, user_id: user.id }])
     .select()
     .single();
@@ -59,7 +59,7 @@ export async function createActivity(activity: Omit<Activity, 'id' | 'created_at
 
 export async function updateActivity(id: string, updates: Partial<Activity>) {
   const { data, error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .update(updates)
     .eq('id', id)
     .select()
@@ -71,7 +71,7 @@ export async function updateActivity(id: string, updates: Partial<Activity>) {
 
 export async function deleteActivity(id: string) {
   const { error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .delete()
     .eq('id', id);
 
@@ -80,7 +80,7 @@ export async function deleteActivity(id: string) {
 
 export async function getRecentActivities(limit: number = 10) {
   const { data, error } = await supabase
-    .from('activities')
+    .from('ownbase_activities')
     .select('*')
     .order('activity_date', { ascending: false })
     .limit(limit);

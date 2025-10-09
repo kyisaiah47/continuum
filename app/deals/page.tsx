@@ -221,7 +221,7 @@ export default function DealsPage() {
                       </KanbanHeader>
                       <KanbanCards id={column.id}>
                         {(deal) => (
-                          <KanbanCard key={deal.id} id={deal.id} name={deal.name}>
+                          <KanbanCard key={deal.id} id={deal.id} name={deal.name} column={deal.column}>
                             <div className="space-y-2">
                               <h4 className="font-semibold text-sm">{deal.title}</h4>
                               <div className="flex items-center justify-between">
