@@ -73,14 +73,8 @@ export default function DealsPage() {
       <SidebarInset>
         <SiteHeader />
         <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-          {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">Deals Pipeline</h1>
-              <p className="text-muted-foreground">
-                Track and manage your sales opportunities
-              </p>
-            </div>
+          {/* Actions */}
+          <div className="flex items-center justify-end">
             <Button>
               <Plus className="mr-2 h-4 w-4" />
               New Deal
