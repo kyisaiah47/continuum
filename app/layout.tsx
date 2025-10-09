@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Web3 CRM - Customer Data, Customer Owned",
+  title: "Ownbase - Customer Data, Customer Owned",
   description: "The first CRM where customers own their data. Built on Polkadot.",
 };
 

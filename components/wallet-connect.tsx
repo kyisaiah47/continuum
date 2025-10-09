@@ -30,7 +30,7 @@ export function WalletConnect() {
         "@polkadot/extension-dapp"
       );
 
-      const extensions = await web3Enable("Web3 CRM");
+      const extensions = await web3Enable("Ownbase");
       if (extensions.length === 0) {
         return;
       }
@@ -54,7 +54,7 @@ export function WalletConnect() {
       );
 
       // Request permission to access accounts
-      const extensions = await web3Enable("Web3 CRM");
+      const extensions = await web3Enable("Ownbase");
 
       if (extensions.length === 0) {
         alert(
