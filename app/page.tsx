@@ -3,7 +3,10 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { GlassCard } from "@/components/ui/glass-card"
-import { ArrowRight, Database, Shield, User, ChevronRight, Check, Wallet, Building2, Network } from "lucide-react"
+import { MynLogo } from "@/components/brand/myn-logo"
+import { EthosLogo } from "@/components/brand/ethos-logo"
+import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { ArrowRight, Shield, ChevronRight, Check, Wallet, Building2, Network, User, Database } from "lucide-react"
 
 export default function LandingPage() {
   return (
@@ -20,8 +23,8 @@ export default function LandingPage() {
         <header className="fixed top-0 w-full z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
           <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-continuum animate-gradient-flow">
-                <Database className="h-4 w-4 text-white" />
+              <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-gradient-continuum animate-gradient-flow p-2">
+                <ContinuumLogo className="h-full w-full text-white" />
               </div>
               <div className="flex flex-col">
                 <span className="text-base font-semibold tracking-tight">Continuum</span>
@@ -107,8 +110,8 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-gradient-myn opacity-10 group-hover:opacity-20 transition-opacity" />
                   <div className="relative">
                     <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-myn">
-                        <User className="h-6 w-6 text-white" />
+                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-myn p-2.5">
+                        <MynLogo className="h-full w-full text-white" />
                       </div>
                       <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
                     </div>
@@ -145,8 +148,8 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-primary/5 group-hover:bg-primary/10 transition-colors" />
                   <div className="relative">
                     <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-primary">
-                        <Building2 className="h-6 w-6 text-primary-foreground" />
+                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-primary p-2.5">
+                        <EthosLogo className="h-full w-full text-primary-foreground" />
                       </div>
                       <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
                     </div>
@@ -183,8 +186,8 @@ export default function LandingPage() {
                   <div className="absolute inset-0 bg-gradient-continuum opacity-5 group-hover:opacity-10 transition-opacity animate-gradient-flow" />
                   <div className="relative">
                     <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-continuum animate-gradient-flow">
-                        <Network className="h-6 w-6 text-white" />
+                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-gradient-continuum animate-gradient-flow p-2.5">
+                        <ContinuumLogo className="h-full w-full text-white" />
                       </div>
                       <ChevronRight className="h-5 w-5 text-muted-foreground group-hover:text-[#00D4FF] group-hover:translate-x-1 transition-all" />
                     </div>
@@ -497,8 +500,8 @@ export default function LandingPage() {
             <div className="grid md:grid-cols-5 gap-12 mb-12">
               <div className="md:col-span-2">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-continuum animate-gradient-flow">
-                    <Database className="h-4 w-4 text-white" />
+                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-gradient-continuum animate-gradient-flow p-1.5">
+                    <ContinuumLogo className="h-full w-full text-white" />
                   </div>
                   <span className="font-semibold text-lg tracking-tight">Continuum</span>
                 </div>

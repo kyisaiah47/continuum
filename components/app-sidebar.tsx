@@ -18,6 +18,7 @@ import {
   IconSettings,
   IconUsers,
 } from "@tabler/icons-react"
+import { EthosLogo } from "@/components/brand/ethos-logo"
 
 import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
@@ -151,8 +152,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="/" className="flex items-center gap-3">
-                <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground">
-                  <IconDatabase className="h-4 w-4" />
+                <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground p-1.5">
+                  <EthosLogo className="h-full w-full" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-base font-semibold tracking-tight">Ethos</span>
