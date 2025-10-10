@@ -36,15 +36,24 @@ export function SignupForm({
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        },
       });
 
       if (error) throw error;
 
-      toast.success("Account created! Please check your email to verify.");
-      router.push("/login");
+      // Check if email confirmation is disabled (user will be immediately confirmed)
+      if (data.user && data.session) {
+        toast.success("Account created! Redirecting to dashboard...");
+        router.push("/dashboard");
+      } else {
+        toast.success("Account created! Please check your email to verify.");
+        router.push("/login");
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to create account");
     } finally {

@@ -29,16 +29,21 @@ export function LoginForm({
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (error) throw error;
 
-      toast.success("Welcome back!");
-      router.push("/dashboard");
+      if (data.session) {
+        toast.success("Welcome back!");
+        router.push("/dashboard");
+      } else {
+        toast.error("Login failed. Please try again.");
+      }
     } catch (error: any) {
+      console.error("Login error:", error);
       toast.error(error.message || "Failed to login");
     } finally {
       setIsLoading(false);
