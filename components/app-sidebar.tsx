@@ -150,11 +150,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/">
-                <svg width="20" height="20" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg" className="!size-5">
-                  <path d="M28.7 0H12.8L0 12.8V28.7L12.8 41.5H28.7L41.5 28.7V12.8L28.7 0ZM15 28.9L6.80002 20.7L15 12.5C18.1 9.4 23.2 9.4 26.3 12.5L34.5 20.7L26.3 28.9C23.2 32 18.2 32 15 28.9Z" fill="currentColor"/>
-                </svg>
-                <span className="text-base font-semibold">Ownbase</span>
+              <a href="/" className="flex items-center gap-3">
+                <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground">
+                  <IconDatabase className="h-4 w-4" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-base font-semibold tracking-tight">Ethos</span>
+                  <span className="text-xs text-muted-foreground">The Ethical CRM</span>
+                </div>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
