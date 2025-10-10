@@ -1,0 +1,9 @@
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/ink_storage_traits-54b7d5b17bf98954.d: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/impls/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/storage.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/layout/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/layout/impls.rs
+
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/libink_storage_traits-54b7d5b17bf98954.rmeta: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/impls/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/storage.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/layout/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/layout/impls.rs
+
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/lib.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/impls/mod.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/storage.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/layout/mod.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ink_storage_traits-5.1.1/src/layout/impls.rs:

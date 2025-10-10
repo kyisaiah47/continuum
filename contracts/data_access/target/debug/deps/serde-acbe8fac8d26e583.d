@@ -1,0 +1,14 @@
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/serde-acbe8fac8d26e583.d: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/build/serde-5763e49c53f6fba5/out/private.rs
+
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/libserde-acbe8fac8d26e583.rlib: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/build/serde-5763e49c53f6fba5/out/private.rs
+
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/libserde-acbe8fac8d26e583.rmeta: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/build/serde-5763e49c53f6fba5/out/private.rs
+
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/build/serde-5763e49c53f6fba5/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/build/serde-5763e49c53f6fba5/out

@@ -4,11 +4,12 @@
 /// This contract manages customer data access permissions and payments
 #[ink::contract]
 mod data_access {
+    use ink::prelude::vec::Vec;
     use ink::storage::Mapping;
 
     /// Status of an access request
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout))]
     pub enum RequestStatus {
         Pending,
         Approved,
@@ -18,7 +19,7 @@ mod data_access {
 
     /// Data access request structure
     #[derive(Debug, scale::Encode, scale::Decode)]
-    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
+    #[cfg_attr(feature = "std", derive(scale_info::TypeInfo, ink::storage::traits::StorageLayout))]
     pub struct AccessRequest {
         /// Business requesting access
         pub business: AccountId,
@@ -125,7 +126,7 @@ mod data_access {
         ) -> Result<u64> {
             let caller = self.env().caller();
             let payment = self.env().transferred_value();
-            let duration_seconds = (duration_days as u64) * 86400; // Convert days to seconds
+            let duration_seconds = (duration_days as u64).saturating_mul(86400); // Convert days to seconds
 
             // Ensure payment was sent
             if payment == 0 {
@@ -147,7 +148,7 @@ mod data_access {
 
             // Store the request
             self.requests.insert(request_id, &request);
-            self.next_request_id += 1;
+            self.next_request_id = self.next_request_id.saturating_add(1);
 
             // Add to business and customer request lists
             let mut business_list = self
@@ -190,7 +191,7 @@ mod data_access {
 
             // Set expiration time
             let now = self.env().block_timestamp();
-            let expires_at = now + request.duration;
+            let expires_at = now.saturating_add(request.duration);
             request.expires_at = Some(expires_at);
             request.status = RequestStatus::Approved;
 

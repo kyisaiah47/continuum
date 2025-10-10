@@ -1,0 +1,10 @@
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/ink/release/deps/derive_more-fe9b0aba917926b6.d: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/syn_compat.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/utils.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/display.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/from.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/parsing.rs
+
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/ink/release/deps/libderive_more-fe9b0aba917926b6.dylib: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/syn_compat.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/utils.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/display.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/from.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/parsing.rs
+
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/lib.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/syn_compat.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/utils.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/display.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/from.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/derive_more-0.99.20/src/parsing.rs:

@@ -1,0 +1,1 @@
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/ink/release/metadata-gen: /Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/lib.rs /private/var/folders/1q/n0ym4t213z1cb8l_fkrrzdt80000gp/T/cargo-contract_2g311q/.ink/metadata_gen/main.rs

@@ -1,0 +1,1 @@
+std::result::Result<std::option::Option<data_access::AccessRequest>, ink::LangError>: ink::parity_scale_codec::Encode

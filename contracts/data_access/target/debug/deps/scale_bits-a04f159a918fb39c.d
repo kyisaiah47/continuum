@@ -1,0 +1,10 @@
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/scale_bits-a04f159a918fb39c.d: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/bits/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/bits/bits.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/decode_iter.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/encode_iter.rs
+
+/Users/ikim1/Documents/GitHub/web3-crm/contracts/data_access/target/debug/deps/libscale_bits-a04f159a918fb39c.rmeta: /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/lib.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/bits/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/bits/bits.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/mod.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/decode_iter.rs /Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/encode_iter.rs
+
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/lib.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/bits/mod.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/bits/bits.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/mod.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/decode_iter.rs:
+/Users/ikim1/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/scale-bits-0.5.0/src/scale/encode_iter.rs:

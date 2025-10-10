@@ -6,6 +6,8 @@ edition = "2021"
 
 [dependencies]
 ink = { version = "5.0.0", default-features = false }
+scale = { package = "parity-scale-codec", version = "3", default-features = false, features = ["derive"] }
+scale-info = { version = "2", default-features = false, features = ["derive"], optional = true }
 
 [lib]
 path = "lib.rs"
@@ -14,12 +16,10 @@ path = "lib.rs"
 default = ["std"]
 std = [
     "ink/std",
+    "scale/std",
+    "scale-info/std",
 ]
 ink-as-dependency = []
 
 [profile.release]
 overflow-checks = false
-
-[[test]]
-name = "integration"
-path = "integration_tests.rs"

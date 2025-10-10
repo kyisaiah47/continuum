@@ -1,0 +1,1 @@
+{"rustc":12610991425282158916,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[17605717126308396068,"build_script_build",false,14905407671377660578]],"local":[{"RerunIfChanged":{"output":"release/build/paste-7576e1bdabbe8c37/output","paths":["build.rs"]}}],"rustflags":["--cap-lints=allow","-Clink-dead-code"],"config":0,"compile_kind":0}
