@@ -110,42 +110,52 @@
 }
 
 .dark {
-  /* Ethos Brand Theme (Navy/Cyan) */
-  --background: #101623; /* Ethos Navy */
+  /* Plural-Inspired Dark Theme */
+  --background: #0a0e14; /* Deep dark blue-black */
   --foreground: #FFFFFF;
-  --card: #1A2332; /* Elevated Navy */
+  --card: #1a1f2e; /* Slightly lighter panels */
   --card-foreground: #FFFFFF;
-  --popover: #1A2332;
+  --popover: #252b3a; /* Elevated surfaces */
   --popover-foreground: #FFFFFF;
-  --primary: #00C7FF; /* Ethos Cyan - primary CTA color */
-  --primary-foreground: #101623;
-  --secondary: #242D3E; /* Dark slate */
+  --primary: #8b5cf6; /* Vibrant purple - primary CTA */
+  --primary-foreground: #FFFFFF;
+  --secondary: #252b3a; /* Card backgrounds */
   --secondary-foreground: #FFFFFF;
-  --muted: #242D3E;
-  --muted-foreground: #C8D1DB; /* Muted text */
-  --accent: #00C7FF; /* Ethos Cyan */
-  --accent-foreground: #101623;
-  --destructive: #FF6B6B; /* Rejected Red */
-  --border: #3A4A5E; /* Border gray */
-  --input: #242D3E;
-  --ring: #00C7FF;
+  --muted: #1a1f2e;
+  --muted-foreground: #9ca3af; /* Gray for body text */
+  --accent: #8b5cf6; /* Purple accent */
+  --accent-foreground: #FFFFFF;
+  --destructive: #ef4444; /* Red */
+  --border: rgba(255, 255, 255, 0.08); /* Subtle borders */
+  --input: #1a1f2e;
+  --ring: #8b5cf6;
 
-  /* Charts - Ethos branded */
-  --chart-1: #00C7FF; /* Cyan */
-  --chart-2: #7A9BBE; /* Steel Blue */
-  --chart-3: #B6C8E0; /* Silver */
-  --chart-4: #00D88A; /* Approved Green */
-  --chart-5: #FFB84D; /* Pending Amber */
+  /* Charts - Multi-color accents */
+  --chart-1: #8b5cf6; /* Purple */
+  --chart-2: #06b6d4; /* Cyan */
+  --chart-3: #f97316; /* Orange */
+  --chart-4: #10b981; /* Green */
+  --chart-5: #fbbf24; /* Yellow */
 
-  /* Sidebar - Ethos theme */
-  --sidebar: #0D0E12; /* Continuum Black for sidebar */
+  /* Sidebar - Dark theme */
+  --sidebar: #0a0e14;
   --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #00C7FF;
-  --sidebar-primary-foreground: #101623;
-  --sidebar-accent: #242D3E;
+  --sidebar-primary: #8b5cf6;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #1a1f2e;
   --sidebar-accent-foreground: #FFFFFF;
-  --sidebar-border: #3A4A5E;
-  --sidebar-ring: #00C7FF;
+  --sidebar-border: rgba(255, 255, 255, 0.08);
+  --sidebar-ring: #8b5cf6;
+
+  /* Plural Design System Extensions */
+  --grid-line: rgba(255, 255, 255, 0.03);
+  --border-emphasis: rgba(255, 255, 255, 0.15);
+  --accent-hover: #9d6ff7;
+  --accent-glow: rgba(139, 92, 246, 0.3);
+  --accent-cyan: #06b6d4;
+  --accent-orange: #f97316;
+  --accent-green: #10b981;
+  --text-dimmed: #6b7280;
 }
 
 @layer base {
@@ -192,7 +202,30 @@
 
 /* Utility Classes */
 @layer utilities {
-  /* Frosted Glass (Myn) */
+  /* Grid Background (Plural-inspired) */
+  .grid-background {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  /* Glass Morphism (Plural-style) */
+  .glass-card {
+    background: rgba(37, 43, 58, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Frosted Glass (Legacy) */
   .glass-frosted {
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(12px);
@@ -200,7 +233,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Glass Morphism (Ethos) */
+  /* Glass Morphism (Legacy) */
   .glass-morph {
     background: rgba(26, 35, 50, 0.6);
     backdrop-filter: blur(16px);
@@ -220,6 +253,15 @@
   .bg-gradient-continuum {
     background: linear-gradient(135deg, #00D4FF 0%, #8B5CF6 50%, #FF7AE0 100%);
     background-size: 200% 200%;
+  }
+
+  /* Plural-Inspired Gradients */
+  .bg-gradient-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  }
+
+  .bg-gradient-purple-hover {
+    background: linear-gradient(135deg, #9d6ff7 0%, #8b5cf6 100%);
   }
 
   /* Animations */
@@ -250,6 +292,49 @@
 
   .hover-glow:hover {
     box-shadow: 0 0 20px rgba(0, 199, 255, 0.4);
+  }
+
+  /* Plural-Style Hover Effects */
+  .hover-lift {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.3s ease;
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+
+  .hover-glow-purple {
+    transition: all 0.3s ease;
+  }
+
+  .hover-glow-purple:hover {
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+  }
+
+  /* Purple Button */
+  .btn-purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-purple:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+    background: linear-gradient(135deg, #9d6ff7 0%, #8b5cf6 100%);
+  }
+
+  .btn-purple:active {
+    transform: translateY(0);
   }
 
   /* Typography Utilities */
