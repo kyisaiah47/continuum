@@ -4,8 +4,11 @@ import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
 import { ProductSwitcher } from "@/components/product-switcher"
 import { Settings, Wallet, Bell, Shield, Eye } from "lucide-react"
+import { useWallet } from "@/lib/polkadot/wallet-context"
 
 export default function MynSettings() {
+  const { account, connect, disconnect, isConnecting } = useWallet()
+
   return (
     <GridBackground showCorners className="min-h-screen">
       <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
@@ -43,17 +46,41 @@ export default function MynSettings() {
               Wallet Connection
             </h2>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="text-base text-white mb-2">Connected Wallet</div>
-                  <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08]">
-                    5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-                  </code>
+              {account ? (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-base text-white mb-2">Connected Wallet</div>
+                    <div className="space-y-2">
+                      {account.meta.name && (
+                        <div className="text-sm text-white/60">{account.meta.name}</div>
+                      )}
+                      <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08] block">
+                        {account.address}
+                      </code>
+                    </div>
+                  </div>
+                  <button
+                    onClick={disconnect}
+                    className="px-6 py-2 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.05] text-white/60 hover:text-white transition-all"
+                  >
+                    Disconnect
+                  </button>
                 </div>
-                <button className="px-6 py-2 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.05] text-white/60 hover:text-white transition-all">
-                  Disconnect
-                </button>
-              </div>
+              ) : (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="text-base text-white mb-2">No Wallet Connected</div>
+                    <p className="text-sm text-white/40">Connect your Polkadot wallet to access your data vault</p>
+                  </div>
+                  <ButtonPurple
+                    onClick={connect}
+                    disabled={isConnecting}
+                    className="h-10 px-6 text-sm"
+                  >
+                    {isConnecting ? "Connecting..." : "Connect Wallet"}
+                  </ButtonPurple>
+                </div>
+              )}
             </div>
           </div>
 
@@ -148,7 +175,7 @@ export default function MynSettings() {
 
       <footer className="border-t border-white/[0.08] px-8 py-8">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-          <p className="text-xs text-white/30">© 2025 Continuum. Built on Polkadot.</p>
+          <p className="text-xs text-white/30"> 2025 Continuum. Built on Polkadot.</p>
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
             <span className="text-xs text-white/30">Wallet Connected</span>

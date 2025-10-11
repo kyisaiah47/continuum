@@ -1,14 +1,35 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
 import { ContinuumLogo } from "@/components/brand/continuum-logo"
-import { Plus, Wallet, Clock, DollarSign, Shield, Lock, AlertCircle } from "lucide-react"
-import { mockDataAccessRequests } from "@/lib/mock-data"
+import { Plus, Wallet, Clock, DollarSign, Shield, Lock, AlertCircle, Loader2 } from "lucide-react"
+import { getBusinessRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
+import { DataAccessRequestDialog } from "@/components/data-access-request-dialog"
 
 export default function DataAccessPage() {
-  const activeRequests = mockDataAccessRequests.filter((r) => r.status === "approved")
-  const pendingRequests = mockDataAccessRequests.filter((r) => r.status === "pending")
+  const [requests, setRequests] = useState<DataAccessRequest[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    loadRequests()
+  }, [])
+
+  async function loadRequests() {
+    try {
+      setIsLoading(true)
+      const data = await getBusinessRequests()
+      setRequests(data)
+    } catch (error) {
+      console.error("Failed to load requests:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const activeRequests = requests.filter((r) => r.status === "approved")
+  const pendingRequests = requests.filter((r) => r.status === "pending")
 
   return (
     <GridBackground showCorners className="min-h-screen">
@@ -51,10 +72,7 @@ export default function DataAccessPage() {
                 Request temporary access to customer-owned data
               </p>
             </div>
-            <ButtonPurple className="h-12 px-6 text-base">
-              <Plus className="mr-2 h-4 w-4" />
-              New Request
-            </ButtonPurple>
+            <DataAccessRequestDialog onSuccess={loadRequests} />
           </div>
 
           {/* Info Card */}
@@ -93,26 +111,28 @@ export default function DataAccessPage() {
 
           {/* Active Requests */}
           <div className="mt-16">
-            {activeRequests.length === 0 && (
+            {isLoading ? (
+              <div className="flex items-center justify-center py-20">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className="ml-3 text-white/50">Loading requests...</span>
+              </div>
+            ) : activeRequests.length === 0 ? (
               <div className="text-center py-32">
                 <Lock className="h-24 w-24 mx-auto mb-8 text-white/20" />
                 <h3 className="text-3xl font-light text-white mb-4">No active access</h3>
                 <p className="text-lg text-white/50 mb-8">
                   Request access to customer data to get started
                 </p>
-                <ButtonPurple className="h-12 px-8 text-base">
-                  <Plus className="mr-2 h-4 w-4" />
-                  New Request
-                </ButtonPurple>
+                <DataAccessRequestDialog onSuccess={loadRequests} />
               </div>
-            )}
+            ) : null}
 
-            {activeRequests.length > 0 && (
+            {!isLoading && activeRequests.length > 0 && (
               <div className="grid md:grid-cols-2 gap-6">
                 {activeRequests.map((request) => {
-                  const daysLeft = Math.ceil(
-                    (new Date(request.expiresAt!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-                  )
+                  const daysLeft = request.expires_at
+                    ? Math.ceil((new Date(request.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+                    : 0
                   const isExpiringSoon = daysLeft <= 7
 
                   return (
@@ -124,7 +144,7 @@ export default function DataAccessPage() {
 
                       <div className="flex items-start justify-between mb-6">
                         <div>
-                          <h3 className="text-2xl font-light text-white mb-2">{request.customerName}</h3>
+                          <h3 className="text-2xl font-light text-white mb-2">{request.customer_name || "Customer"}</h3>
                           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
                             <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
                             <span className="text-xs text-green-400 uppercase tracking-[0.15em]">Active</span>
@@ -139,7 +159,7 @@ export default function DataAccessPage() {
                         <div>
                           <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Wallet Address</p>
                           <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08]">
-                            {request.customerWallet.slice(0, 12)}...{request.customerWallet.slice(-8)}
+                            {request.customer_wallet.slice(0, 12)}...{request.customer_wallet.slice(-8)}
                           </code>
                         </div>
 
@@ -147,8 +167,8 @@ export default function DataAccessPage() {
                           <div>
                             <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Payment</p>
                             <div className="flex items-baseline gap-2">
-                              <span className="text-xl font-light text-white">{request.paymentAmount}</span>
-                              <span className="text-sm text-white/50">{request.paymentCurrency}</span>
+                              <span className="text-xl font-light text-white">{request.payment_amount}</span>
+                              <span className="text-sm text-white/50">{request.payment_currency}</span>
                             </div>
                           </div>
                           <div>
@@ -166,7 +186,7 @@ export default function DataAccessPage() {
                       <div className="mb-6">
                         <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-3">Access to Fields</p>
                         <div className="flex flex-wrap gap-2">
-                          {request.requestedFields.map((field) => (
+                          {request.requested_fields.map((field) => (
                             <span
                               key={field}
                               className="px-2 py-1 rounded bg-white/[0.03] border border-white/[0.08] text-xs text-white/60"
@@ -184,13 +204,15 @@ export default function DataAccessPage() {
                         </div>
                       )}
 
-                      <div className="mt-6 pt-6 border-t border-white/[0.05] text-xs text-white/30 uppercase tracking-[0.15em]">
-                        Expires: {new Date(request.expiresAt!).toLocaleDateString('en-US', {
-                          month: 'short',
-                          day: 'numeric',
-                          year: 'numeric'
-                        })}
-                      </div>
+                      {request.expires_at && (
+                        <div className="mt-6 pt-6 border-t border-white/[0.05] text-xs text-white/30 uppercase tracking-[0.15em]">
+                          Expires: {new Date(request.expires_at).toLocaleDateString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
+                        </div>
+                      )}
                     </div>
                   )
                 })}
@@ -219,7 +241,7 @@ export default function DataAccessPage() {
 
                     <div className="flex items-start justify-between mb-6">
                       <div>
-                        <h3 className="text-2xl font-light text-white mb-2">{request.customerName}</h3>
+                        <h3 className="text-2xl font-light text-white mb-2">{request.customer_name || "Customer"}</h3>
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20">
                           <Clock className="h-3 w-3 text-yellow-400" />
                           <span className="text-xs text-yellow-400 uppercase tracking-[0.15em]">Pending</span>
@@ -234,7 +256,7 @@ export default function DataAccessPage() {
                       <div>
                         <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Wallet Address</p>
                         <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08]">
-                          {request.customerWallet.slice(0, 12)}...{request.customerWallet.slice(-8)}
+                          {request.customer_wallet.slice(0, 12)}...{request.customer_wallet.slice(-8)}
                         </code>
                       </div>
 
@@ -242,14 +264,14 @@ export default function DataAccessPage() {
                         <div>
                           <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Offered Payment</p>
                           <div className="flex items-baseline gap-2">
-                            <span className="text-xl font-light text-white">{request.paymentAmount}</span>
-                            <span className="text-sm text-white/50">{request.paymentCurrency}</span>
+                            <span className="text-xl font-light text-white">{request.payment_amount}</span>
+                            <span className="text-sm text-white/50">{request.payment_currency}</span>
                           </div>
                         </div>
                         <div>
                           <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Duration</p>
                           <div className="flex items-baseline gap-2">
-                            <span className="text-xl font-light text-white">{request.accessDurationDays}</span>
+                            <span className="text-xl font-light text-white">{request.access_duration_days}</span>
                             <span className="text-sm text-white/50">days</span>
                           </div>
                         </div>
@@ -259,7 +281,7 @@ export default function DataAccessPage() {
                     <div>
                       <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-3">Requested Fields</p>
                       <div className="flex flex-wrap gap-2">
-                        {request.requestedFields.map((field) => (
+                        {request.requested_fields.map((field) => (
                           <span
                             key={field}
                             className="px-2 py-1 rounded bg-white/[0.03] border border-white/[0.08] text-xs text-white/60"

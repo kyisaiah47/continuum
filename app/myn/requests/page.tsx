@@ -8,24 +8,25 @@ import { Users, Check, X, Clock, DollarSign, Loader2 } from "lucide-react"
 import { getPendingCustomerRequests, approveDataAccessRequest, rejectDataAccessRequest, type DataAccessRequest } from "@/lib/api/data-access-requests"
 import { createEarning } from "@/lib/api/earnings"
 import { toast } from "sonner"
+import { useWallet } from "@/lib/polkadot/wallet-context"
 
 export default function MynRequests() {
+  const { account } = useWallet()
   const [requests, setRequests] = useState<DataAccessRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [processingId, setProcessingId] = useState<string | null>(null)
 
-  // TODO: Get wallet address from user profile or Polkadot wallet
-  // For now, using a placeholder
-  const walletAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
-
   useEffect(() => {
-    loadRequests()
-  }, [])
+    if (account?.address) {
+      loadRequests()
+    }
+  }, [account?.address])
 
   async function loadRequests() {
+    if (!account?.address) return
     try {
       setIsLoading(true)
-      const data = await getPendingCustomerRequests(walletAddress)
+      const data = await getPendingCustomerRequests(account.address)
       setRequests(data)
     } catch (error) {
       console.error("Failed to load requests:", error)

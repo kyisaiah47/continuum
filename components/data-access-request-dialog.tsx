@@ -1,222 +1,212 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { toast } from "sonner";
-import { requestDataAccess } from "@/lib/polkadot/contract";
-import type { Contact } from "@/lib/supabase-client";
-import { Loader2 } from "lucide-react";
+import { useState } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ButtonPurple } from "@/components/ui/plural"
+import { Plus, Loader2 } from "lucide-react"
+import { createDataAccessRequest } from "@/lib/api/data-access-requests"
+import { toast } from "sonner"
 
-type DataAccessRequestDialogProps = {
-  contact: Contact;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  onSuccess?: () => void;
-};
-
-const AVAILABLE_FIELDS = [
-  { id: 'name', label: 'Name' },
-  { id: 'email', label: 'Email' },
-  { id: 'phone', label: 'Phone' },
-  { id: 'company', label: 'Company' },
-  { id: 'job_title', label: 'Job Title' },
-  { id: 'notes', label: 'Notes' },
-];
+interface DataAccessRequestDialogProps {
+  contactName?: string
+  contactWallet?: string
+  onSuccess?: () => void
+}
 
 export function DataAccessRequestDialog({
-  contact,
-  open,
-  onOpenChange,
-  onSuccess,
+  contactName,
+  contactWallet,
+  onSuccess
 }: DataAccessRequestDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedFields, setSelectedFields] = useState<string[]>([]);
-  const [durationDays, setDurationDays] = useState('30');
-  const [paymentAmount, setPaymentAmount] = useState('5');
+  const [open, setOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [formData, setFormData] = useState({
+    customer_wallet: contactWallet || "",
+    customer_name: contactName || "",
+    requested_fields: [] as string[],
+    access_duration_days: 30,
+    payment_amount: 5.0
+  })
 
-  const handleFieldToggle = (fieldId: string) => {
-    setSelectedFields((prev) =>
-      prev.includes(fieldId)
-        ? prev.filter((id) => id !== fieldId)
-        : [...prev, fieldId]
-    );
-  };
+  const availableFields = [
+    "Full Name",
+    "Email",
+    "Phone",
+    "Company",
+    "Job Title",
+    "LinkedIn",
+    "Industry Interest",
+    "Budget Range",
+    "Decision Timeline"
+  ]
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
+  function toggleField(field: string) {
+    setFormData(prev => ({
+      ...prev,
+      requested_fields: prev.requested_fields.includes(field)
+        ? prev.requested_fields.filter(f => f !== field)
+        : [...prev.requested_fields, field]
+    }))
+  }
 
-    if (!contact.wallet_address) {
-      toast.error('Contact does not have a wallet address');
-      setIsLoading(false);
-      return;
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+
+    if (!formData.customer_wallet) {
+      toast.error("Wallet address is required")
+      return
     }
 
-    if (selectedFields.length === 0) {
-      toast.error('Please select at least one field');
-      setIsLoading(false);
-      return;
+    if (formData.requested_fields.length === 0) {
+      toast.error("Please select at least one field")
+      return
     }
 
     try {
-      // Call smart contract to request access
-      await requestDataAccess(
-        contact.wallet_address,
-        selectedFields,
-        parseInt(durationDays),
-        paymentAmount
-      );
+      setIsSubmitting(true)
+      await createDataAccessRequest(formData)
+      toast.success("Data access request created successfully")
+      setOpen(false)
+      onSuccess?.()
 
-      toast.success('Access request submitted! Waiting for customer approval.');
-      onOpenChange(false);
-      if (onSuccess) onSuccess();
-    } catch (error: any) {
-      console.error('Error requesting access:', error);
-      toast.error(error.message || 'Failed to request data access');
+      // Reset form
+      setFormData({
+        customer_wallet: "",
+        customer_name: "",
+        requested_fields: [],
+        access_duration_days: 30,
+        payment_amount: 5.0
+      })
+    } catch (error) {
+      console.error("Failed to create request:", error)
+      toast.error("Failed to create request. Please try again.")
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <ButtonPurple className="h-12 px-6 text-base">
+          <Plus className="mr-2 h-4 w-4" />
+          New Request
+        </ButtonPurple>
+      </DialogTrigger>
+      <DialogContent className="max-w-2xl bg-[#0a0a0a] border-white/[0.08]">
         <DialogHeader>
-          <DialogTitle>Request Data Access</DialogTitle>
-          <DialogDescription>
-            Request temporary access to {contact.name}'s data. Payment will be
-            escrowed until they approve or reject.
-          </DialogDescription>
+          <DialogTitle className="text-2xl font-light text-white">
+            Request Data Access
+          </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit}>
-          <div className="grid gap-4 py-4">
-            {/* Customer Info */}
-            <div className="p-4 bg-muted rounded-lg">
-              <div className="font-semibold mb-1">{contact.name}</div>
-              <div className="text-sm text-muted-foreground">
-                Wallet: {contact.wallet_address?.slice(0, 8)}...
-                {contact.wallet_address?.slice(-6)}
-              </div>
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+          <div>
+            <label className="text-sm text-white/60 mb-2 block">
+              Customer Wallet Address *
+            </label>
+            <input
+              type="text"
+              value={formData.customer_wallet}
+              onChange={(e) => setFormData({ ...formData, customer_wallet: e.target.value })}
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-primary/50 transition font-mono text-sm"
+              placeholder="5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+              required
+            />
+          </div>
 
-            {/* Field Selection */}
-            <div className="grid gap-2">
-              <Label>Requested Fields *</Label>
-              <div className="grid gap-2 p-4 border rounded-lg">
-                {AVAILABLE_FIELDS.map((field) => (
-                  <div key={field.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={field.id}
-                      checked={selectedFields.includes(field.id)}
-                      onCheckedChange={() => handleFieldToggle(field.id)}
-                      disabled={isLoading}
-                    />
-                    <label
-                      htmlFor={field.id}
-                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                    >
-                      {field.label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div>
+            <label className="text-sm text-white/60 mb-2 block">
+              Customer Name (Optional)
+            </label>
+            <input
+              type="text"
+              value={formData.customer_name}
+              onChange={(e) => setFormData({ ...formData, customer_name: e.target.value })}
+              className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-primary/50 transition"
+              placeholder="John Doe"
+            />
+          </div>
 
-            {/* Duration */}
-            <div className="grid gap-2">
-              <Label htmlFor="duration">
-                Access Duration (days) *
-              </Label>
-              <Input
-                id="duration"
-                type="number"
-                min="1"
-                max="365"
-                value={durationDays}
-                onChange={(e) => setDurationDays(e.target.value)}
-                placeholder="30"
-                required
-                disabled={isLoading}
-              />
-              <p className="text-xs text-muted-foreground">
-                Access will automatically expire after this period
-              </p>
-            </div>
-
-            {/* Payment */}
-            <div className="grid gap-2">
-              <Label htmlFor="payment">
-                Payment Offer (DOT) *
-              </Label>
-              <Input
-                id="payment"
-                type="number"
-                step="0.1"
-                min="0.1"
-                value={paymentAmount}
-                onChange={(e) => setPaymentAmount(e.target.value)}
-                placeholder="5"
-                required
-                disabled={isLoading}
-              />
-              <p className="text-xs text-muted-foreground">
-                Funds will be escrowed until customer approves or rejects
-              </p>
-            </div>
-
-            {/* Summary */}
-            <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-800">
-              <div className="text-sm space-y-1">
-                <div className="font-semibold text-blue-900 dark:text-blue-100">
-                  Summary
-                </div>
-                <div className="text-blue-700 dark:text-blue-300">
-                  • {selectedFields.length} field(s) requested
-                </div>
-                <div className="text-blue-700 dark:text-blue-300">
-                  • {durationDays} days access
-                </div>
-                <div className="text-blue-700 dark:text-blue-300">
-                  • {paymentAmount} DOT payment
-                </div>
-              </div>
+          <div>
+            <label className="text-sm text-white/60 mb-3 block">
+              Requested Fields * (Select at least one)
+            </label>
+            <div className="grid grid-cols-3 gap-2">
+              {availableFields.map((field) => (
+                <button
+                  key={field}
+                  type="button"
+                  onClick={() => toggleField(field)}
+                  className={`px-3 py-2 rounded-lg text-sm transition ${
+                    formData.requested_fields.includes(field)
+                      ? "bg-primary/20 border border-primary/40 text-primary"
+                      : "bg-white/[0.03] border border-white/[0.08] text-white/60 hover:border-white/20"
+                  }`}
+                >
+                  {field}
+                </button>
+              ))}
             </div>
           </div>
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isLoading}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">
+                Access Duration (days)
+              </label>
+              <input
+                type="number"
+                value={formData.access_duration_days}
+                onChange={(e) => setFormData({ ...formData, access_duration_days: parseInt(e.target.value) })}
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-primary/50 transition"
+                min="1"
+                max="365"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="text-sm text-white/60 mb-2 block">
+                Payment Amount (DOT)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={formData.payment_amount}
+                onChange={(e) => setFormData({ ...formData, payment_amount: parseFloat(e.target.value) })}
+                className="w-full px-4 py-3 bg-white/[0.03] border border-white/[0.08] rounded-lg text-white focus:outline-none focus:border-primary/50 transition"
+                min="0.1"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-3 pt-4">
+            <ButtonPurple
+              type="submit"
+              className="flex-1 h-12"
+              disabled={isSubmitting}
             >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Requesting...
+                  Creating Request...
                 </>
               ) : (
-                `Request Access (${paymentAmount} DOT)`
+                `Request Access for ${formData.payment_amount} DOT`
               )}
-            </Button>
-          </DialogFooter>
+            </ButtonPurple>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="px-6 h-12 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.05] text-white/60 hover:text-white transition"
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

@@ -35,7 +35,9 @@ export class PolkadotWallet {
       this.selectedAccount = this.accounts[0]
 
       // Store in localStorage
-      localStorage.setItem('polkadot_selected_account', this.selectedAccount.address)
+      if (typeof window !== "undefined") {
+        localStorage.setItem('polkadot_selected_account', this.selectedAccount.address)
+      }
 
       return this.accounts
     } catch (error) {
@@ -47,7 +49,9 @@ export class PolkadotWallet {
   async disconnect(): Promise<void> {
     this.selectedAccount = null
     this.accounts = []
-    localStorage.removeItem('polkadot_selected_account')
+    if (typeof window !== "undefined") {
+      localStorage.removeItem('polkadot_selected_account')
+    }
   }
 
   async selectAccount(address: string): Promise<void> {
@@ -56,7 +60,9 @@ export class PolkadotWallet {
       throw new Error('Account not found')
     }
     this.selectedAccount = account
-    localStorage.setItem('polkadot_selected_account', address)
+    if (typeof window !== "undefined") {
+      localStorage.setItem('polkadot_selected_account', address)
+    }
   }
 
   getSelectedAccount(): InjectedAccountWithMeta | null {
@@ -78,6 +84,7 @@ export class PolkadotWallet {
   // Restore connection from localStorage
   async restoreConnection(): Promise<boolean> {
     try {
+      if (typeof window === "undefined") return false
       const savedAddress = localStorage.getItem('polkadot_selected_account')
       if (!savedAddress) return false
 

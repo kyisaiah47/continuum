@@ -6,22 +6,24 @@ import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/pl
 import { ProductSwitcher } from "@/components/product-switcher"
 import { Lock, Shield, AlertCircle, XCircle, Loader2 } from "lucide-react"
 import { getActiveRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
+import { useWallet } from "@/lib/polkadot/wallet-context"
 
 export default function MynAccess() {
+  const { account } = useWallet()
   const [activeGrants, setActiveGrants] = useState<DataAccessRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  // TODO: Get wallet address from user profile or Polkadot wallet
-  const walletAddress = "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
-
   useEffect(() => {
-    loadActiveGrants()
-  }, [])
+    if (account?.address) {
+      loadActiveGrants()
+    }
+  }, [account?.address])
 
   async function loadActiveGrants() {
+    if (!account?.address) return
     try {
       setIsLoading(true)
-      const data = await getActiveRequests(walletAddress)
+      const data = await getActiveRequests(account.address)
       setActiveGrants(data)
     } catch (error) {
       console.error("Failed to load active grants:", error)

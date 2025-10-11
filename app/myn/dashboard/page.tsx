@@ -1,11 +1,50 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard } from "@/components/ui/plural"
 import { ProductSwitcher } from "@/components/product-switcher"
-import { Shield, DollarSign, Users, Lock, ArrowRight, AlertCircle, CheckCircle } from "lucide-react"
+import { Shield, DollarSign, Users, Lock, ArrowRight, AlertCircle, CheckCircle, Loader2 } from "lucide-react"
+import { useWallet } from "@/lib/polkadot/wallet-context"
+import { getPendingCustomerRequests, getActiveRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
+import { getEarningsStats } from "@/lib/api/earnings"
+import { getVaultStats } from "@/lib/api/vault"
 
 export default function MynDashboard() {
+  const { account } = useWallet()
+  const [isLoading, setIsLoading] = useState(true)
+  const [pendingRequests, setPendingRequests] = useState<DataAccessRequest[]>([])
+  const [activeGrants, setActiveGrants] = useState<DataAccessRequest[]>([])
+  const [totalEarnings, setTotalEarnings] = useState(0)
+  const [sharedFieldsCount, setSharedFieldsCount] = useState(0)
+
+  useEffect(() => {
+    if (account?.address) {
+      loadDashboardData()
+    }
+  }, [account?.address])
+
+  async function loadDashboardData() {
+    try {
+      setIsLoading(true)
+      const [pending, active, earnings, vaultStats] = await Promise.all([
+        getPendingCustomerRequests(account!.address),
+        getActiveRequests(account!.address),
+        getEarningsStats(),
+        getVaultStats()
+      ])
+
+      setPendingRequests(pending)
+      setActiveGrants(active)
+      setTotalEarnings(earnings.totalEarnings)
+      setSharedFieldsCount(vaultStats.sharedFieldsCount)
+    } catch (error) {
+      console.error("Failed to load dashboard data:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <GridBackground showCorners className="min-h-screen">
       {/* Header */}
@@ -41,28 +80,42 @@ export default function MynDashboard() {
           </div>
 
           {/* Stats Grid */}
-          <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
-            <StatCard value="$142" label="Total Earnings" />
-            <StatCard value="3" label="Active Access Grants" />
-            <StatCard value="5" label="Pending Requests" />
-            <StatCard value="12" label="Data Fields Shared" />
-          </div>
+          {isLoading ? (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="p-8 flex flex-col items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              <StatCard value={`$${totalEarnings.toFixed(2)}`} label="Total Earnings" />
+              <StatCard value={activeGrants.length.toString()} label="Active Access Grants" />
+              <StatCard value={pendingRequests.length.toString()} label="Pending Requests" />
+              <StatCard value={sharedFieldsCount.toString()} label="Data Fields Shared" />
+            </div>
+          )}
 
           <SectionDivider label="Overview" />
 
           {/* Alert Banner */}
-          <div className="mt-16 mb-12 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-6 flex items-start gap-4">
-            <AlertCircle className="h-6 w-6 text-yellow-400 flex-shrink-0 mt-1" />
-            <div>
-              <h3 className="text-lg font-light text-white mb-2">5 New Access Requests</h3>
-              <p className="text-sm text-white/60 mb-4">
-                Companies are requesting access to your data. Review and approve to earn DOT tokens.
-              </p>
-              <ButtonPurple className="h-10 px-6 text-sm" asChild>
-                <Link href="/myn/requests">Review Requests</Link>
-              </ButtonPurple>
+          {!isLoading && pendingRequests.length > 0 && (
+            <div className="mt-16 mb-12 bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-6 flex items-start gap-4">
+              <AlertCircle className="h-6 w-6 text-yellow-400 flex-shrink-0 mt-1" />
+              <div>
+                <h3 className="text-lg font-light text-white mb-2">
+                  {pendingRequests.length} New Access Request{pendingRequests.length > 1 ? 's' : ''}
+                </h3>
+                <p className="text-sm text-white/60 mb-4">
+                  Companies are requesting access to your data. Review and approve to earn DOT tokens.
+                </p>
+                <ButtonPurple className="h-10 px-6 text-sm" asChild>
+                  <Link href="/myn/requests">Review Requests</Link>
+                </ButtonPurple>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Quick Actions */}
           <div className="grid md:grid-cols-3 gap-px bg-white/[0.03] mb-24">
@@ -205,7 +258,7 @@ export default function MynDashboard() {
       {/* Footer */}
       <footer className="border-t border-white/[0.08] px-8 py-8">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between">
-          <p className="text-xs text-white/30">© 2025 Continuum. Built on Polkadot.</p>
+          <p className="text-xs text-white/30"> 2025 Continuum. Built on Polkadot.</p>
           <div className="flex items-center gap-2">
             <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
             <span className="text-xs text-white/30">Wallet Connected</span>
