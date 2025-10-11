@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
-import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { ProductSwitcher } from "@/components/product-switcher"
 import { Plus, Wallet, Clock, DollarSign, Shield, Lock, AlertCircle, Loader2 } from "lucide-react"
 import { getBusinessRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
 import { DataAccessRequestDialog } from "@/components/data-access-request-dialog"

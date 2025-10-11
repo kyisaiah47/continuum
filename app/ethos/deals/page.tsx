@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard } from "@/components/ui/plural"
-import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { ProductSwitcher } from "@/components/product-switcher"
 import { Plus, DollarSign, TrendingUp, Loader2, Briefcase } from "lucide-react"
 import { getDealsWithContacts, updateDealStage, getPipelineStats } from "@/lib/api/deals"
 import { DealDialog } from "@/components/deal-dialog"

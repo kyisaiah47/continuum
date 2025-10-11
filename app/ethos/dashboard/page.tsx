@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard, GlassCard } from "@/components/ui/plural"
-import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { ProductSwitcher } from "@/components/product-switcher"
 import {
   Users, Briefcase, TrendingUp, CheckSquare,
   Plus, ArrowRight, Activity, DollarSign
@@ -14,15 +14,7 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
         <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-all p-2">
-              <ContinuumLogo className="h-full w-full text-primary" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-semibold tracking-tight">Continuum</span>
-              <span className="text-[10px] text-white/40 uppercase tracking-[0.15em]">Dashboard</span>
-            </div>
-          </Link>
+          <ProductSwitcher />
 
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/ethos/dashboard" className="text-sm text-primary transition tracking-wide">Dashboard</Link>

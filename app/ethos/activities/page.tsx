@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
-import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { ProductSwitcher } from "@/components/product-switcher"
 import { Plus, Phone, Mail, Calendar, FileText, Activity as ActivityIcon, Loader2 } from "lucide-react"
 import { getActivities, type Activity } from "@/lib/api/activities"
 import { getContactById, type Contact } from "@/lib/api/contacts"
