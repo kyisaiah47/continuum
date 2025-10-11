@@ -29,7 +29,7 @@ export default function MynPage() {
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/myn" className="text-sm text-primary transition tracking-wide">Myn</Link>
             <Link href="/ethos" className="text-sm text-white/60 hover:text-white transition tracking-wide">Ethos</Link>
-            <Link href="/protocol" className="text-sm text-white/60 hover:text-white transition tracking-wide">Protocol</Link>
+            <Link href="/continuum" className="text-sm text-white/60 hover:text-white transition tracking-wide">Continuum</Link>
             <div className="h-6 w-px bg-white/[0.08]" />
             <Link href="/login" className="text-sm text-white/60 hover:text-white transition tracking-wide">Login</Link>
             <ButtonPurple className="h-9 px-5 text-sm" asChild>
@@ -436,7 +436,7 @@ export default function MynPage() {
               <ul className="space-y-3">
                 <li><Link href="/myn" className="text-sm text-white/60 hover:text-white transition">Myn App</Link></li>
                 <li><Link href="/ethos" className="text-sm text-white/60 hover:text-white transition">Ethos CRM</Link></li>
-                <li><Link href="/protocol" className="text-sm text-white/60 hover:text-white transition">Protocol</Link></li>
+                <li><Link href="/continuum" className="text-sm text-white/60 hover:text-white transition">Continuum</Link></li>
               </ul>
             </div>
 

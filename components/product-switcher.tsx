@@ -5,7 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { MynLogo } from "@/components/brand/myn-logo"
 import { EthosLogo } from "@/components/brand/ethos-logo"
-import { ContinuumProtocolLogo } from "@/components/brand/continuum-protocol-logo"
+import { ContinuumLogo } from "@/components/brand/continuum-logo"
 import { ChevronDown } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 
@@ -31,8 +31,8 @@ const products = [
   {
     id: "continuum" as Product,
     name: "Continuum",
-    description: "Protocol",
-    logo: ContinuumProtocolLogo,
+    description: "Network",
+    logo: ContinuumLogo,
     href: "/continuum/dashboard",
     color: "#00D4FF"
   }

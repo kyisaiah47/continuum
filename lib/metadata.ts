@@ -83,7 +83,7 @@ export const productMetadata = {
     description: 'Consent-based customer relationship management. Request data access ethically, pay fairly in DOT.',
   }),
   continuum: createMetadata({
-    title: 'Continuum - Privacy Protocol',
-    description: 'Decentralized protocol for privacy-preserving data exchange. Deploy smart contracts, monitor transactions.',
+    title: 'Continuum - Decentralized Trust Layer',
+    description: 'Decentralized network for privacy-preserving data exchange. Deploy smart contracts, monitor transactions.',
   }),
 }
