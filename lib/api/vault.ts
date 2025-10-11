@@ -23,9 +23,13 @@ export interface VaultCategory {
 export async function getVaultData(): Promise<VaultCategory[]> {
   const supabase = createClient()
 
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
+
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .select("*")
+    .eq("user_id", userId)
     .order("category", { ascending: true })
     .order("field_name", { ascending: true })
 
@@ -153,9 +157,13 @@ export async function seedDefaultVaultFields(): Promise<void> {
 export async function getSharedFields(): Promise<VaultField[]> {
   const supabase = createClient()
 
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
+
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .select("*")
+    .eq("user_id", userId)
     .eq("is_shared", true)
     .order("category", { ascending: true })
 
@@ -167,20 +175,24 @@ export async function getSharedFields(): Promise<VaultField[]> {
 export async function getVaultStats() {
   const supabase = createClient()
 
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
+
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .select("is_shared, field_value")
+    .eq("user_id", userId)
 
   if (error) throw error
 
   const totalFields = data?.length || 0
-  const sharedFields = data?.filter(f => f.is_shared).length || 0
+  const sharedFieldsCount = data?.filter(f => f.is_shared).length || 0
   const filledFields = data?.filter(f => f.field_value && f.field_value.trim() !== "").length || 0
   const completionRate = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0
 
   return {
     totalFields,
-    sharedFields,
+    sharedFieldsCount,
     filledFields,
     completionRate,
   }
