@@ -1,11 +1,14 @@
 "use client"
 
+import { useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
 import { ProductSwitcher } from "@/components/product-switcher"
 import { Box, Upload, Code, Settings, Eye, Trash2 } from "lucide-react"
+import { DeployContractDialog } from "@/components/dialogs/deploy-contract-dialog"
 
 export default function ContinuumContracts() {
+  const [deployDialogOpen, setDeployDialogOpen] = useState(false)
   const contracts = [
     {
       id: 1,
@@ -66,7 +69,10 @@ export default function ContinuumContracts() {
                 Deploy and manage ink! contracts on Polkadot
               </p>
             </div>
-            <ButtonPurple className="h-12 px-6 text-base">
+            <ButtonPurple
+              className="h-12 px-6 text-base"
+              onClick={() => setDeployDialogOpen(true)}
+            >
               <Upload className="mr-2 h-4 w-4" />
               Deploy Contract
             </ButtonPurple>
@@ -177,6 +183,15 @@ export default function ContinuumContracts() {
           </div>
         </div>
       </footer>
+
+      <DeployContractDialog
+        open={deployDialogOpen}
+        onOpenChange={setDeployDialogOpen}
+        onSuccess={() => {
+          // In a real implementation, this would reload contracts from the blockchain
+          console.log("Contract deployed successfully")
+        }}
+      />
     </GridBackground>
   )
 }

@@ -1,16 +1,36 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard } from "@/components/ui/plural"
 import { ProductSwitcher } from "@/components/product-switcher"
-import { Code, Activity, Network, Box, Key, FileCode } from "lucide-react"
+import { Code, Activity, Network, Box, Key, FileCode, Loader2, AlertCircle, CheckCircle, Clock } from "lucide-react"
+import { getBlockchainStats, getRecentActivity, type BlockchainStats, type RecentActivity } from "@/lib/api/blockchain-stats"
 
 export default function ContinuumDashboard() {
-  const recentActivity = [
-    { id: 1, type: "Contract Deployed", name: "DataAccessControl v2.1", time: "2 hours ago", status: "success" },
-    { id: 2, type: "Transaction", name: "Access grant approved", time: "5 hours ago", status: "success" },
-    { id: 3, type: "API Call", name: "verifyAccess() executed", time: "1 day ago", status: "success" },
-  ]
+  const [stats, setStats] = useState<BlockchainStats | null>(null)
+  const [activities, setActivities] = useState<RecentActivity[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  async function loadDashboardData() {
+    try {
+      setIsLoading(true)
+      const [statsData, activitiesData] = await Promise.all([
+        getBlockchainStats(),
+        getRecentActivity()
+      ])
+      setStats(statsData)
+      setActivities(activitiesData)
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <GridBackground showCorners className="min-h-screen">
@@ -49,33 +69,52 @@ export default function ContinuumDashboard() {
           </div>
 
           {/* Network Stats */}
-          <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
-            <StatCard value="1.2M" label="Total Transactions" />
-            <StatCard value="847" label="Active Contracts" />
-            <StatCard value="32K DOT" label="Total Value Locked" />
-            <StatCard value="99.9%" label="Uptime" />
-          </div>
+          {isLoading ? (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="p-8 flex flex-col items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ))}
+            </div>
+          ) : stats ? (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              <StatCard value={stats.totalTransactions} label="Total Transactions" />
+              <StatCard value={stats.activeContracts} label="Active Contracts" />
+              <StatCard value={stats.totalValueLocked} label="Total Value Locked" />
+              <StatCard value={stats.uptime} label="Uptime" />
+            </div>
+          ) : (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              <StatCard value="N/A" label="Total Transactions" />
+              <StatCard value="N/A" label="Active Contracts" />
+              <StatCard value="N/A" label="Total Value Locked" />
+              <StatCard value="N/A" label="Uptime" />
+            </div>
+          )}
 
           {/* Network Status */}
-          <div className="mb-16 bg-gradient-to-r from-green-500/10 to-green-500/5 border border-green-500/20 rounded-lg p-8">
-            <div className="flex gap-6">
-              <div className="flex-shrink-0">
-                <div className="h-12 w-12 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center">
-                  <Activity className="h-6 w-6 text-green-400" />
+          {stats && (
+            <div className="mb-16 bg-gradient-to-r from-green-500/10 to-green-500/5 border border-green-500/20 rounded-lg p-8">
+              <div className="flex gap-6">
+                <div className="flex-shrink-0">
+                  <div className="h-12 w-12 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center">
+                    <Activity className="h-6 w-6 text-green-400" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xl font-light text-white mb-2">Network Status: Operational</h3>
+                  <p className="text-base text-white/60 leading-relaxed">
+                    All systems operational. Current block height: {stats.blockHeight.toLocaleString()}. Average block time: {stats.avgBlockTime}.
+                  </p>
+                </div>
+                <div className="text-right">
+                  <div className="text-4xl font-light text-green-400">{stats.availability}</div>
+                  <div className="text-sm text-white/40">availability</div>
                 </div>
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-light text-white mb-2">Network Status: Operational</h3>
-                <p className="text-base text-white/60 leading-relaxed">
-                  All systems operational. Current block height: 4,892,103. Average block time: 6.2s.
-                </p>
-              </div>
-              <div className="text-right">
-                <div className="text-4xl font-light text-green-400">100%</div>
-                <div className="text-sm text-white/40">availability</div>
-              </div>
             </div>
-          </div>
+          )}
 
           <SectionDivider label="Quick Actions" />
 
@@ -109,27 +148,65 @@ export default function ContinuumDashboard() {
           <SectionDivider label="Recent Activity" />
 
           {/* Recent Activity */}
-          <div className="mt-16 bg-white/[0.03] border border-white/[0.08] rounded-lg divide-y divide-white/[0.05]">
-            {recentActivity.map((activity) => (
-              <div key={activity.id} className="p-6 hover:bg-white/[0.02] transition-all flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div className="h-12 w-12 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center">
-                    <Activity className="h-6 w-6 text-green-400" />
+          {isLoading ? (
+            <div className="mt-16 flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-3 text-white/50">Loading activity...</span>
+            </div>
+          ) : activities.length === 0 ? (
+            <div className="mt-16 text-center py-20">
+              <Activity className="h-16 w-16 mx-auto mb-4 text-white/20" />
+              <p className="text-white/40">No recent activity</p>
+            </div>
+          ) : (
+            <div className="mt-16 bg-white/[0.03] border border-white/[0.08] rounded-lg divide-y divide-white/[0.05]">
+              {activities.map((activity) => {
+                const statusConfig = {
+                  success: {
+                    bg: "bg-green-500/10",
+                    border: "border-green-500/20",
+                    text: "text-green-400",
+                    icon: CheckCircle
+                  },
+                  pending: {
+                    bg: "bg-yellow-500/10",
+                    border: "border-yellow-500/20",
+                    text: "text-yellow-400",
+                    icon: Clock
+                  },
+                  failed: {
+                    bg: "bg-red-500/10",
+                    border: "border-red-500/20",
+                    text: "text-red-400",
+                    icon: AlertCircle
+                  }
+                }
+
+                const config = statusConfig[activity.status]
+                const Icon = config.icon
+
+                return (
+                  <div key={activity.id} className="p-6 hover:bg-white/[0.02] transition-all flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                      <div className={`h-12 w-12 rounded-full ${config.bg} border ${config.border} flex items-center justify-center`}>
+                        <Icon className={`h-6 w-6 ${config.text}`} />
+                      </div>
+                      <div>
+                        <div className="text-base text-white mb-1">{activity.type}</div>
+                        <div className="text-sm font-mono text-white/40">{activity.name}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-8">
+                      <div className="text-sm text-white/40">{activity.time}</div>
+                      <div className={`px-3 py-1 rounded ${config.bg} border ${config.border} text-xs ${config.text} uppercase tracking-[0.15em]`}>
+                        {activity.status}
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <div className="text-base text-white mb-1">{activity.type}</div>
-                    <div className="text-sm font-mono text-white/40">{activity.name}</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-8">
-                  <div className="text-sm text-white/40">{activity.time}</div>
-                  <div className="px-3 py-1 rounded bg-green-500/10 border border-green-500/20 text-xs text-green-400 uppercase tracking-[0.15em]">
-                    {activity.status}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </main>
 
