@@ -460,7 +460,7 @@ export default function MynPage() {
           </div>
 
           <div className="pt-8 border-t border-white/[0.08] flex items-center justify-between">
-            <p className="text-xs text-white/30">© 2025 Continuum. Built on Polkadot.</p>
+            <p className="text-xs text-white/30">(c) 2025 Continuum. Built on Polkadot.</p>
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
               <span className="text-xs text-white/30">Network Online</span>

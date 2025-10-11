@@ -110,5 +110,4 @@ CREATE POLICY "Business users can update own requests" ON ownbase_data_access_re
 CREATE POLICY "Business users can delete own requests" ON ownbase_data_access_requests
   FOR DELETE USING (auth.uid() = business_user_id);
 
--- TODO: Add policies for customers to view/approve requests for their wallet address
--- This will require a separate customer_users table or authentication mechanism
+-- Customer policies added in migration 20251011000001_customer_access_policies.sql
