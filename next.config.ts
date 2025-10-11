@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
       fullUrl: false,
     },
   },
-  experimental: {
-    suppressHydrationWarning: true,
-  },
   eslint: {
     ignoreDuringBuilds: true,
   },
