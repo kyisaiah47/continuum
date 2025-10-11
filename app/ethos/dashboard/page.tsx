@@ -165,7 +165,7 @@ export default function DashboardPage() {
           <SectionDivider label="Pipeline Performance" className="mt-24" />
 
           {/* Pipeline Stats */}
-          <div className="mt-16 grid md:grid-cols-3 gap-px bg-white/[0.03]">
+          <div className="mt-16 grid md:grid-cols-3 gap-6">
             <GlassCard className="p-12">
               <DollarSign className="h-10 w-10 text-primary mb-6" />
               <div className="text-5xl font-light text-white mb-2">$127K</div>
