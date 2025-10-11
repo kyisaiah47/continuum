@@ -20,12 +20,12 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          name,
+          full_name: name,
         },
       },
     })
@@ -35,7 +35,21 @@ export default function SignupPage() {
         description: error.message,
       })
       setLoading(false)
-    } else {
+    } else if (data.user) {
+      // Manually create user profile since DB is shared (no triggers)
+      const { error: profileError } = await supabase
+        .from('ownbase_user_profiles')
+        .insert({
+          id: data.user.id,
+          email: data.user.email,
+          full_name: name,
+        })
+
+      if (profileError) {
+        console.error('Profile creation error:', profileError)
+        // Continue anyway - profile can be created later
+      }
+
       toast.success("Welcome to Continuum", {
         description: "Your account has been created successfully.",
       })
