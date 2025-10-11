@@ -100,7 +100,7 @@ export default function LandingPage() {
 
           <div className="grid lg:grid-cols-3 gap-px bg-white/[0.03]">
             {/* Myn Card */}
-            <Link href="/myn/dashboard" className="group bg-background p-12 hover:bg-white/[0.02] transition-all relative overflow-hidden">
+            <Link href="/myn" className="group bg-background p-12 hover:bg-white/[0.02] transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
 
               <div className="flex items-center justify-between mb-12">
@@ -124,7 +124,7 @@ export default function LandingPage() {
             </Link>
 
             {/* Ethos Card */}
-            <Link href="/ethos/dashboard" className="group bg-background p-12 hover:bg-white/[0.02] transition-all relative overflow-hidden">
+            <Link href="/ethos" className="group bg-background p-12 hover:bg-white/[0.02] transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
 
               <div className="flex items-center justify-between mb-12">
