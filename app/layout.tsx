@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
+import { createMetadata } from "@/lib/metadata";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,10 +17,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Ethos - The Ethical CRM",
-  description: "Data relationships built on consent. Access verified customer data through transparent consent flows on Polkadot.",
-};
+export const metadata: Metadata = createMetadata();
 
 export default function RootLayout({
   children,
