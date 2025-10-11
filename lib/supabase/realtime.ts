@@ -97,3 +97,25 @@ export function subscribeToVault(
   subscription.subscribe("ownbase_data_vault", callback)
   return subscription
 }
+
+/**
+ * Subscribe to activities for the current user
+ */
+export function subscribeToActivities(
+  callback: RealtimeCallback
+): RealtimeSubscription {
+  const subscription = new RealtimeSubscription()
+  subscription.subscribe("ownbase_activities", callback)
+  return subscription
+}
+
+/**
+ * Subscribe to tasks for the current user
+ */
+export function subscribeToTasks(
+  callback: RealtimeCallback
+): RealtimeSubscription {
+  const subscription = new RealtimeSubscription()
+  subscription.subscribe("ownbase_tasks", callback)
+  return subscription
+}

@@ -7,10 +7,12 @@ import { ContinuumLogo } from "@/components/brand/continuum-logo"
 import { Plus, Wallet, Clock, DollarSign, Shield, Lock, AlertCircle, Loader2 } from "lucide-react"
 import { getBusinessRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
 import { DataAccessRequestDialog } from "@/components/data-access-request-dialog"
+import { ExtendAccessDialog } from "@/components/dialogs/extend-access-dialog"
 
 export default function DataAccessPage() {
   const [requests, setRequests] = useState<DataAccessRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [extendingRequest, setExtendingRequest] = useState<DataAccessRequest | null>(null)
 
   useEffect(() => {
     loadRequests()
@@ -150,7 +152,10 @@ export default function DataAccessPage() {
                             <span className="text-xs text-green-400 uppercase tracking-[0.15em]">Active</span>
                           </div>
                         </div>
-                        <ButtonPurple className="h-9 px-4 text-sm">
+                        <ButtonPurple
+                          className="h-9 px-4 text-sm"
+                          onClick={() => setExtendingRequest(request)}
+                        >
                           Extend
                         </ButtonPurple>
                       </div>
@@ -315,6 +320,19 @@ export default function DataAccessPage() {
           </div>
         </div>
       </footer>
+
+      {/* Extend Access Dialog */}
+      {extendingRequest && (
+        <ExtendAccessDialog
+          open={!!extendingRequest}
+          onOpenChange={(open) => !open && setExtendingRequest(null)}
+          onSuccess={loadRequests}
+          requestId={extendingRequest.id}
+          customerName={extendingRequest.customer_name || "Customer"}
+          customerWallet={extendingRequest.customer_wallet}
+          businessUserId={extendingRequest.business_user_id}
+        />
+      )}
     </GridBackground>
   )
 }

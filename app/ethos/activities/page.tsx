@@ -1,16 +1,21 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
 import { ContinuumLogo } from "@/components/brand/continuum-logo"
-import { Plus, Phone, Mail, Calendar, FileText, Activity } from "lucide-react"
-import { mockActivities, getContactById } from "@/lib/mock-data"
+import { Plus, Phone, Mail, Calendar, FileText, Activity as ActivityIcon, Loader2 } from "lucide-react"
+import { getActivities, type Activity } from "@/lib/api/activities"
+import { getContactById, type Contact } from "@/lib/api/contacts"
+import { subscribeToActivities } from "@/lib/supabase/realtime"
+import { ActivityDialog } from "@/components/dialogs/activity-dialog"
 
 const activityIcons = {
   call: Phone,
   email: Mail,
   meeting: Calendar,
   note: FileText,
+  task: FileText,
 }
 
 const activityColors = {
@@ -18,11 +23,64 @@ const activityColors = {
   email: "text-purple-400",
   meeting: "text-green-400",
   note: "text-yellow-400",
+  task: "text-orange-400",
+}
+
+type ActivityWithContact = Activity & {
+  contact?: Contact | null
 }
 
 export default function ActivitiesPage() {
-  const sortedActivities = [...mockActivities].sort(
-    (a, b) => new Date(b.activityDate).getTime() - new Date(a.activityDate).getTime()
+  const [activities, setActivities] = useState<ActivityWithContact[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
+  useEffect(() => {
+    loadActivities()
+
+    // Subscribe to real-time updates
+    const subscription = subscribeToActivities((event) => {
+      if (event.eventType === "INSERT" || event.eventType === "UPDATE" || event.eventType === "DELETE") {
+        loadActivities()
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  async function loadActivities() {
+    try {
+      setIsLoading(true)
+      const activitiesData = await getActivities()
+
+      // Fetch contact info for each activity
+      const activitiesWithContacts = await Promise.all(
+        activitiesData.map(async (activity) => {
+          if (activity.contact_id) {
+            try {
+              const contact = await getContactById(activity.contact_id)
+              return { ...activity, contact }
+            } catch (error) {
+              console.error(`Failed to fetch contact ${activity.contact_id}:`, error)
+              return { ...activity, contact: null }
+            }
+          }
+          return { ...activity, contact: null }
+        })
+      )
+
+      setActivities(activitiesWithContacts)
+    } catch (error) {
+      console.error("Failed to load activities:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const sortedActivities = [...activities].sort(
+    (a, b) => new Date(b.activity_date).getTime() - new Date(a.activity_date).getTime()
   )
 
   return (
@@ -66,7 +124,7 @@ export default function ActivitiesPage() {
                 Track customer interactions and engagements
               </p>
             </div>
-            <ButtonPurple className="h-12 px-6 text-base">
+            <ButtonPurple className="h-12 px-6 text-base" onClick={() => setIsDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Log Activity
             </ButtonPurple>
@@ -90,17 +148,25 @@ export default function ActivitiesPage() {
             </div>
           </div>
 
-          <SectionDivider label={`${sortedActivities.length} Activities`} />
+          <SectionDivider label={isLoading ? "Loading..." : `${sortedActivities.length} Activities`} />
+
+          {/* Loading State */}
+          {isLoading && (
+            <div className="mt-16 flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-3 text-white/50">Loading activities...</span>
+            </div>
+          )}
 
           {/* Empty State */}
-          {sortedActivities.length === 0 && (
+          {!isLoading && sortedActivities.length === 0 && (
             <div className="text-center py-32">
-              <Activity className="h-24 w-24 mx-auto mb-8 text-white/20" />
+              <ActivityIcon className="h-24 w-24 mx-auto mb-8 text-white/20" />
               <h3 className="text-3xl font-light text-white mb-4">No activities yet</h3>
               <p className="text-lg text-white/50 mb-8">
                 Start logging customer interactions
               </p>
-              <ButtonPurple className="h-12 px-8 text-base">
+              <ButtonPurple className="h-12 px-8 text-base" onClick={() => setIsDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Log Activity
               </ButtonPurple>
@@ -108,10 +174,9 @@ export default function ActivitiesPage() {
           )}
 
           {/* Activity Timeline */}
-          {sortedActivities.length > 0 && (
+          {!isLoading && sortedActivities.length > 0 && (
             <div className="mt-16 max-w-4xl mx-auto space-y-8">
               {sortedActivities.map((activity, index) => {
-                const contact = getContactById(activity.contactId)
                 const Icon = activityIcons[activity.type as keyof typeof activityIcons]
                 const iconColor = activityColors[activity.type as keyof typeof activityColors]
 
@@ -143,31 +208,33 @@ export default function ActivitiesPage() {
                                   {activity.type}
                                 </span>
                               </div>
-                              <p className="text-base text-white/50 leading-relaxed">
-                                {activity.description}
-                              </p>
+                              {activity.description && (
+                                <p className="text-base text-white/50 leading-relaxed">
+                                  {activity.description}
+                                </p>
+                              )}
                             </div>
                           </div>
 
                           <div className="flex items-center gap-6">
-                            {contact && (
+                            {activity.contact && (
                               <div className="flex items-center gap-3">
                                 <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                                   <span className="text-xs text-primary">
-                                    {contact.name.split(" ").map((n) => n[0]).join("")}
+                                    {activity.contact.name.split(" ").map((n) => n[0]).join("")}
                                   </span>
                                 </div>
                                 <div>
-                                  <div className="text-sm text-white font-light">{contact.name}</div>
-                                  {contact.company && (
-                                    <div className="text-xs text-white/30">{contact.company}</div>
+                                  <div className="text-sm text-white font-light">{activity.contact.name}</div>
+                                  {activity.contact.company && (
+                                    <div className="text-xs text-white/30">{activity.contact.company}</div>
                                   )}
                                 </div>
                               </div>
                             )}
                             <div className="h-px flex-1 bg-white/[0.05]" />
                             <span className="text-xs text-white/30 uppercase tracking-[0.15em]">
-                              {new Date(activity.activityDate).toLocaleDateString('en-US', {
+                              {new Date(activity.activity_date).toLocaleDateString('en-US', {
                                 month: 'short',
                                 day: 'numeric',
                                 year: 'numeric',
@@ -197,6 +264,13 @@ export default function ActivitiesPage() {
           </div>
         </div>
       </footer>
+
+      {/* Activity Dialog */}
+      <ActivityDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSuccess={loadActivities}
+      />
     </GridBackground>
   )
 }

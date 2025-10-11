@@ -1,11 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
 import { ContinuumLogo } from "@/components/brand/continuum-logo"
-import { Plus, Calendar, CheckSquare, Square, AlertCircle } from "lucide-react"
-import { mockTasks, getContactById } from "@/lib/mock-data"
+import { Plus, Calendar, CheckSquare, Square, AlertCircle, Loader2 } from "lucide-react"
+import { getTasks, toggleTaskComplete, type Task } from "@/lib/api/tasks"
+import { getContactById, type Contact } from "@/lib/api/contacts"
+import { subscribeToTasks } from "@/lib/supabase/realtime"
+import { TaskDialog } from "@/components/dialogs/task-dialog"
+import { toast } from "sonner"
 
 const priorityColors = {
   high: "border-red-500/50 bg-red-500/10",
@@ -19,12 +23,78 @@ const priorityTextColors = {
   low: "text-blue-400",
 }
 
+type TaskWithContact = Task & {
+  contact?: Contact | null
+}
+
 export default function TasksPage() {
   const [view, setView] = useState<"pending" | "completed">("pending")
+  const [tasks, setTasks] = useState<TaskWithContact[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null)
 
-  const pendingTasks = mockTasks.filter((t) => !t.completed)
-  const completedTasks = mockTasks.filter((t) => t.completed)
-  const tasks = view === "pending" ? pendingTasks : completedTasks
+  useEffect(() => {
+    loadTasks()
+
+    // Subscribe to real-time updates
+    const subscription = subscribeToTasks((event) => {
+      if (event.eventType === "INSERT" || event.eventType === "UPDATE" || event.eventType === "DELETE") {
+        loadTasks()
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
+  async function loadTasks() {
+    try {
+      setIsLoading(true)
+      const tasksData = await getTasks()
+
+      // Fetch contact info for each task
+      const tasksWithContacts = await Promise.all(
+        tasksData.map(async (task) => {
+          if (task.contact_id) {
+            try {
+              const contact = await getContactById(task.contact_id)
+              return { ...task, contact }
+            } catch (error) {
+              console.error(`Failed to fetch contact ${task.contact_id}:`, error)
+              return { ...task, contact: null }
+            }
+          }
+          return { ...task, contact: null }
+        })
+      )
+
+      setTasks(tasksWithContacts)
+    } catch (error) {
+      console.error("Failed to load tasks:", error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  async function handleToggleComplete(taskId: string) {
+    try {
+      setTogglingTaskId(taskId)
+      await toggleTaskComplete(taskId)
+      await loadTasks()
+      toast.success("Task updated")
+    } catch (error) {
+      console.error("Failed to toggle task:", error)
+      toast.error("Failed to update task")
+    } finally {
+      setTogglingTaskId(null)
+    }
+  }
+
+  const pendingTasks = tasks.filter((t) => !t.completed)
+  const completedTasks = tasks.filter((t) => t.completed)
+  const displayedTasks = view === "pending" ? pendingTasks : completedTasks
 
   return (
     <GridBackground showCorners className="min-h-screen">
@@ -67,7 +137,7 @@ export default function TasksPage() {
                 Manage follow-ups and action items
               </p>
             </div>
-            <ButtonPurple className="h-12 px-6 text-base">
+            <ButtonPurple className="h-12 px-6 text-base" onClick={() => setIsDialogOpen(true)}>
               <Plus className="mr-2 h-4 w-4" />
               Add Task
             </ButtonPurple>
@@ -106,10 +176,18 @@ export default function TasksPage() {
             </div>
           </div>
 
-          <SectionDivider label={`${tasks.length} ${view === "pending" ? "Pending" : "Completed"} Tasks`} />
+          <SectionDivider label={isLoading ? "Loading..." : `${displayedTasks.length} ${view === "pending" ? "Pending" : "Completed"} Tasks`} />
+
+          {/* Loading State */}
+          {isLoading && (
+            <div className="mt-16 flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-3 text-white/50">Loading tasks...</span>
+            </div>
+          )}
 
           {/* Empty State */}
-          {tasks.length === 0 && (
+          {!isLoading && displayedTasks.length === 0 && (
             <div className="text-center py-32">
               <CheckSquare className="h-24 w-24 mx-auto mb-8 text-white/20" />
               <h3 className="text-3xl font-light text-white mb-4">
@@ -119,7 +197,7 @@ export default function TasksPage() {
                 {view === "pending" ? "Add a new task to get started" : "Complete some tasks to see them here"}
               </p>
               {view === "pending" && (
-                <ButtonPurple className="h-12 px-8 text-base">
+                <ButtonPurple className="h-12 px-8 text-base" onClick={() => setIsDialogOpen(true)}>
                   <Plus className="mr-2 h-4 w-4" />
                   Add Task
                 </ButtonPurple>
@@ -128,11 +206,11 @@ export default function TasksPage() {
           )}
 
           {/* Tasks List */}
-          {tasks.length > 0 && (
+          {!isLoading && displayedTasks.length > 0 && (
             <div className="mt-16 max-w-4xl mx-auto space-y-4">
-              {tasks.map((task) => {
-                const contact = getContactById(task.contactId)
-                const isOverdue = !task.completed && new Date(task.dueDate) < new Date()
+              {displayedTasks.map((task) => {
+                const isOverdue = !task.completed && task.due_date && new Date(task.due_date) < new Date()
+                const isToggling = togglingTaskId === task.id
 
                 return (
                   <div
@@ -146,10 +224,16 @@ export default function TasksPage() {
                     <div className="flex gap-6">
                       {/* Checkbox */}
                       <div className="flex-shrink-0">
-                        <button className="h-6 w-6 rounded border-2 border-white/[0.20] flex items-center justify-center hover:border-primary transition-colors">
-                          {task.completed && (
+                        <button
+                          onClick={() => handleToggleComplete(task.id)}
+                          disabled={isToggling}
+                          className="h-6 w-6 rounded border-2 border-white/[0.20] flex items-center justify-center hover:border-primary transition-colors disabled:opacity-50"
+                        >
+                          {isToggling ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-primary" />
+                          ) : task.completed ? (
                             <CheckSquare className="h-5 w-5 text-primary" />
-                          )}
+                          ) : null}
                         </button>
                       </div>
 
@@ -160,9 +244,11 @@ export default function TasksPage() {
                             <h3 className={`text-xl font-light text-white mb-2 ${task.completed ? "line-through" : ""}`}>
                               {task.title}
                             </h3>
-                            <p className={`text-base text-white/50 ${task.completed ? "line-through" : ""}`}>
-                              {task.description}
-                            </p>
+                            {task.description && (
+                              <p className={`text-base text-white/50 ${task.completed ? "line-through" : ""}`}>
+                                {task.description}
+                              </p>
+                            )}
                           </div>
                           <div className={`ml-4 px-3 py-1 rounded border ${priorityColors[task.priority as keyof typeof priorityColors]}`}>
                             <span className={`text-xs uppercase tracking-[0.15em] ${priorityTextColors[task.priority as keyof typeof priorityTextColors]}`}>
@@ -172,30 +258,32 @@ export default function TasksPage() {
                         </div>
 
                         <div className="flex items-center gap-6 mt-4">
-                          {contact && (
+                          {task.contact && (
                             <div className="flex items-center gap-3">
                               <div className="h-6 w-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
                                 <span className="text-[10px] text-primary">
-                                  {contact.name.split(" ").map((n) => n[0]).join("")}
+                                  {task.contact.name.split(" ").map((n) => n[0]).join("")}
                                 </span>
                               </div>
-                              <span className="text-sm text-white/50">{contact.name}</span>
+                              <span className="text-sm text-white/50">{task.contact.name}</span>
                             </div>
                           )}
                           <div className="h-px flex-1 bg-white/[0.05]" />
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-white/30" />
-                            <span className={`text-xs uppercase tracking-[0.15em] ${
-                              isOverdue ? "text-red-400" : "text-white/30"
-                            }`}>
-                              {new Date(task.dueDate).toLocaleDateString('en-US', {
-                                month: 'short',
-                                day: 'numeric',
-                                year: 'numeric'
-                              })}
-                              {isOverdue && " • OVERDUE"}
-                            </span>
-                          </div>
+                          {task.due_date && (
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4 text-white/30" />
+                              <span className={`text-xs uppercase tracking-[0.15em] ${
+                                isOverdue ? "text-red-400" : "text-white/30"
+                              }`}>
+                                {new Date(task.due_date).toLocaleDateString('en-US', {
+                                  month: 'short',
+                                  day: 'numeric',
+                                  year: 'numeric'
+                                })}
+                                {isOverdue && " • OVERDUE"}
+                              </span>
+                            </div>
+                          )}
                         </div>
 
                         {isOverdue && (
@@ -224,6 +312,13 @@ export default function TasksPage() {
           </div>
         </div>
       </footer>
+
+      {/* Task Dialog */}
+      <TaskDialog
+        open={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSuccess={loadTasks}
+      />
     </GridBackground>
   )
 }

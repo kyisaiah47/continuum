@@ -1,6 +1,8 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react"
+import { updateWalletAddress, clearWalletAddress } from "../api/user-profile"
+import { toast } from "sonner"
 
 type Account = {
   address: string
@@ -46,6 +48,12 @@ export function WalletProvider({ children }: { children: ReactNode }) {
             address: acc.address,
             meta: acc.meta
           })
+          // Sync wallet address to database
+          try {
+            await updateWalletAddress(acc.address)
+          } catch (err) {
+            console.error("Failed to sync wallet address to database:", err)
+          }
         }
       }
     } catch (err) {
@@ -68,10 +76,20 @@ export function WalletProvider({ children }: { children: ReactNode }) {
           address: acc.address,
           meta: acc.meta
         })
+        // Sync wallet address to database
+        try {
+          await updateWalletAddress(acc.address)
+          toast.success("Wallet connected and synced to your profile")
+        } catch (err) {
+          console.error("Failed to sync wallet address to database:", err)
+          // Don't fail the connection if sync fails
+          toast.success("Wallet connected")
+        }
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to connect wallet"
       setError(message)
+      toast.error(message)
       console.error("Wallet connection error:", err)
     } finally {
       setIsConnecting(false)
@@ -80,8 +98,21 @@ export function WalletProvider({ children }: { children: ReactNode }) {
 
   async function disconnect() {
     if (!walletModule) return
-    await walletModule.disconnect()
-    setAccount(null)
+    try {
+      await walletModule.disconnect()
+      setAccount(null)
+      // Clear wallet address from database
+      try {
+        await clearWalletAddress()
+        toast.success("Wallet disconnected")
+      } catch (err) {
+        console.error("Failed to clear wallet address from database:", err)
+        toast.success("Wallet disconnected")
+      }
+    } catch (err) {
+      console.error("Failed to disconnect wallet:", err)
+      toast.error("Failed to disconnect wallet")
+    }
   }
 
   return (

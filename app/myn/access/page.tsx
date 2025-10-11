@@ -5,13 +5,15 @@ import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
 import { ProductSwitcher } from "@/components/product-switcher"
 import { Lock, Shield, AlertCircle, XCircle, Loader2 } from "lucide-react"
-import { getActiveRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
+import { getActiveRequests, revokeDataAccessRequest, type DataAccessRequest } from "@/lib/api/data-access-requests"
 import { useWallet } from "@/lib/polkadot/wallet-context"
+import { toast } from "sonner"
 
 export default function MynAccess() {
   const { account } = useWallet()
   const [activeGrants, setActiveGrants] = useState<DataAccessRequest[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const [revokingId, setRevokingId] = useState<string | null>(null)
 
   useEffect(() => {
     if (account?.address) {
@@ -29,6 +31,20 @@ export default function MynAccess() {
       console.error("Failed to load active grants:", error)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  async function handleRevoke(grantId: string) {
+    try {
+      setRevokingId(grantId)
+      await revokeDataAccessRequest(grantId)
+      toast.success("Access revoked successfully")
+      await loadActiveGrants()
+    } catch (error) {
+      console.error("Failed to revoke access:", error)
+      toast.error("Failed to revoke access. Please try again.")
+    } finally {
+      setRevokingId(null)
     }
   }
 
@@ -100,6 +116,7 @@ export default function MynAccess() {
               {activeGrants.map((grant) => {
                 const daysLeft = getDaysRemaining(grant.expires_at)
                 const isExpiringSoon = daysLeft <= 7
+                const isRevoking = revokingId === grant.id
 
                 return (
                   <div
@@ -170,9 +187,22 @@ export default function MynAccess() {
                           </div>
                         )}
 
-                        <button className="h-10 px-6 text-sm rounded-lg border border-red-500/50 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all flex items-center gap-2">
-                          <XCircle className="h-4 w-4" />
-                          Revoke Access
+                        <button
+                          onClick={() => handleRevoke(grant.id)}
+                          disabled={isRevoking}
+                          className="h-10 px-6 text-sm rounded-lg border border-red-500/50 bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {isRevoking ? (
+                            <>
+                              <Loader2 className="h-4 w-4 animate-spin" />
+                              Revoking...
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="h-4 w-4" />
+                              Revoke Access
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>

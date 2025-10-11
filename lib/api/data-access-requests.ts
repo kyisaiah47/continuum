@@ -139,6 +139,58 @@ export async function rejectDataAccessRequest(requestId: string): Promise<DataAc
   return data
 }
 
+// Revoke an approved data access request (customer action)
+export async function revokeDataAccessRequest(requestId: string): Promise<DataAccessRequest> {
+  const supabase = createClient()
+
+  const { data, error } = await supabase
+    .from("ownbase_data_access_requests")
+    .update({
+      status: "rejected",
+      expires_at: new Date().toISOString(), // Expire immediately
+    })
+    .eq("id", requestId)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
+// Extend an approved data access request (business action)
+export async function extendDataAccessRequest(
+  requestId: string,
+  additionalDays: number,
+  additionalPayment: number
+): Promise<DataAccessRequest> {
+  const supabase = createClient()
+
+  // Get current request
+  const { data: request, error: fetchError } = await supabase
+    .from("ownbase_data_access_requests")
+    .select("expires_at")
+    .eq("id", requestId)
+    .single()
+
+  if (fetchError) throw fetchError
+
+  // Calculate new expiration date
+  const currentExpiration = new Date(request.expires_at || new Date())
+  const newExpiration = new Date(currentExpiration.getTime() + additionalDays * 24 * 60 * 60 * 1000)
+
+  const { data, error } = await supabase
+    .from("ownbase_data_access_requests")
+    .update({
+      expires_at: newExpiration.toISOString(),
+    })
+    .eq("id", requestId)
+    .select()
+    .single()
+
+  if (error) throw error
+  return data
+}
+
 // Get a single data access request
 export async function getDataAccessRequest(requestId: string): Promise<DataAccessRequest | null> {
   const supabase = createClient()
