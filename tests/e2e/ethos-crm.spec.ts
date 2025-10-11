@@ -1,8 +1,16 @@
 import { test, expect } from '@playwright/test'
 
+// Helper to login
+async function login(page: any) {
+  await page.goto('/login')
+  await page.fill('input[type="email"]', 'demo@continuum.app')
+  await page.fill('input[type="password"]', 'demo123456')
+  await page.click('button[type="submit"]')
+  await page.waitForURL('/ethos/dashboard')
+}
+
 test.describe('Ethos CRM Features', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to Ethos dashboard
     await page.goto('/ethos/dashboard')
     await page.waitForLoadState('networkidle')
   })
@@ -18,21 +26,19 @@ test.describe('Ethos CRM Features', () => {
   })
 
   test('should load Ethos dashboard (when authenticated)', async ({ page }) => {
-    if (page.url().includes('/login')) {
-      test.skip()
-    }
+    await login(page)
+    await page.goto('/ethos/dashboard')
+    await page.waitForLoadState('networkidle')
 
     await expect(page.locator('h1')).toContainText(/Dashboard|CRM|Ethos/)
-
-    // Check for main metrics
     await expect(page.locator('text=Total Contacts').first()).toBeVisible()
     await expect(page.locator('text=Active Deals').first()).toBeVisible()
   })
 
   test('should navigate to contacts page (when authenticated)', async ({ page }) => {
-    if (page.url().includes('/login')) {
-      test.skip()
-    }
+    await login(page)
+    await page.goto('/ethos/dashboard')
+    await page.waitForLoadState('networkidle')
 
     await page.locator('a', { hasText: 'Contacts' }).first().click()
     await expect(page).toHaveURL('/ethos/contacts')
@@ -40,9 +46,9 @@ test.describe('Ethos CRM Features', () => {
   })
 
   test('should navigate to deals page (when authenticated)', async ({ page }) => {
-    if (page.url().includes('/login')) {
-      test.skip()
-    }
+    await login(page)
+    await page.goto('/ethos/dashboard')
+    await page.waitForLoadState('networkidle')
 
     await page.locator('a', { hasText: 'Deals' }).first().click()
     await expect(page).toHaveURL('/ethos/deals')
@@ -50,9 +56,9 @@ test.describe('Ethos CRM Features', () => {
   })
 
   test('should navigate to activities page (when authenticated)', async ({ page }) => {
-    if (page.url().includes('/login')) {
-      test.skip()
-    }
+    await login(page)
+    await page.goto('/ethos/dashboard')
+    await page.waitForLoadState('networkidle')
 
     await page.locator('a', { hasText: 'Activities' }).first().click()
     await expect(page).toHaveURL('/ethos/activities')
@@ -60,9 +66,9 @@ test.describe('Ethos CRM Features', () => {
   })
 
   test('should navigate to tasks page (when authenticated)', async ({ page }) => {
-    if (page.url().includes('/login')) {
-      test.skip()
-    }
+    await login(page)
+    await page.goto('/ethos/dashboard')
+    await page.waitForLoadState('networkidle')
 
     await page.locator('a', { hasText: 'Tasks' }).first().click()
     await expect(page).toHaveURL('/ethos/tasks')
@@ -70,11 +76,10 @@ test.describe('Ethos CRM Features', () => {
   })
 
   test('should navigate to data access page (when authenticated)', async ({ page }) => {
-    if (page.url().includes('/login')) {
-      test.skip()
-    }
+    await login(page)
+    await page.goto('/ethos/data-access')
+    await page.waitForLoadState('networkidle')
 
-    await page.locator('a', { hasText: 'Data Access' }).first().click()
     await expect(page).toHaveURL('/ethos/data-access')
     await expect(page.locator('h1')).toContainText('Data Access')
   })

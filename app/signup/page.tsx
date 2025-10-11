@@ -5,9 +5,9 @@ import { useState } from "react"
 import { GridBackground, ButtonPurple } from "@/components/ui/plural"
 import { ContinuumLogo } from "@/components/brand/continuum-logo"
 import { ArrowRight, Mail, Lock, User } from "lucide-react"
-import { supabase } from "@/lib/supabase-client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { signup } from "@/lib/api/auth"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -20,36 +20,18 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
 
-    const { data, error } = await supabase.auth.signUp({
+    const { user, error } = await signup({
       email,
       password,
-      options: {
-        data: {
-          full_name: name,
-        },
-      },
+      name,
     })
 
-    if (error) {
+    if (error || !user) {
       toast.error("Sign up failed", {
-        description: error.message,
+        description: error || "Failed to create account",
       })
       setLoading(false)
-    } else if (data.user) {
-      // Manually create user profile since DB is shared (no triggers)
-      const { error: profileError } = await supabase
-        .from('ownbase_user_profiles')
-        .insert({
-          id: data.user.id,
-          email: data.user.email,
-          full_name: name,
-        })
-
-      if (profileError) {
-        console.error('Profile creation error:', profileError)
-        // Continue anyway - profile can be created later
-      }
-
+    } else {
       toast.success("Welcome to Continuum", {
         description: "Your account has been created successfully.",
       })

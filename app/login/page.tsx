@@ -5,9 +5,10 @@ import { useState } from "react"
 import { GridBackground, ButtonPurple } from "@/components/ui/plural"
 import { ContinuumLogo } from "@/components/brand/continuum-logo"
 import { ArrowRight, Mail, Lock } from "lucide-react"
-import { supabase } from "@/lib/supabase-client"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { login } from "@/lib/api/auth"
+import { createClient } from "@/lib/supabase/client"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -19,14 +20,14 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
 
-    const { error, data } = await supabase.auth.signInWithPassword({
+    const { user, error } = await login({
       email,
       password,
     })
 
-    if (error) {
+    if (error || !user) {
       toast.error("Authentication failed", {
-        description: error.message,
+        description: error || "Invalid email or password",
       })
       setLoading(false)
     } else {
@@ -34,23 +35,10 @@ export default function LoginPage() {
         description: "Redirecting to dashboard...",
       })
 
-      // Get last used product from localStorage or database
-      let lastProduct = localStorage.getItem("lastUsedProduct") || "ethos"
+      // Use preferred product from user profile or default to ethos
+      const preferredProduct = user.preferred_product || "ethos"
 
-      // Try to get from database if user is authenticated
-      if (data.user) {
-        const { data: profile } = await supabase
-          .from("ownbase_user_profiles")
-          .select("last_product")
-          .eq("id", data.user.id)
-          .single()
-
-        if (profile?.last_product) {
-          lastProduct = profile.last_product
-        }
-      }
-
-      router.push(`/${lastProduct}/dashboard`)
+      router.push(`/${preferredProduct}/dashboard`)
     }
   }
 

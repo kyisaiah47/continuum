@@ -13,9 +13,9 @@ export async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.some(route => req.nextUrl.pathname.startsWith(route));
   const isAuthRoute = authRoutes.some(route => req.nextUrl.pathname.startsWith(route));
 
-  // Check for auth token in cookies
-  const token = req.cookies.get('sb-access-token');
-  const isAuthenticated = !!token;
+  // Check for custom auth session in cookies
+  const session = req.cookies.get('continuum_session');
+  const isAuthenticated = !!session;
 
   // Redirect to login if trying to access protected route without auth
   if (isProtectedRoute && !isAuthenticated) {
