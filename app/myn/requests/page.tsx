@@ -9,6 +9,7 @@ import { getPendingCustomerRequests, approveDataAccessRequest, rejectDataAccessR
 import { createEarning } from "@/lib/api/earnings"
 import { toast } from "sonner"
 import { useWallet } from "@/lib/polkadot/wallet-context"
+import { subscribeToCustomerRequests } from "@/lib/supabase/realtime"
 
 export default function MynRequests() {
   const { account } = useWallet()
@@ -19,6 +20,21 @@ export default function MynRequests() {
   useEffect(() => {
     if (account?.address) {
       loadRequests()
+
+      // Subscribe to realtime updates
+      const subscription = subscribeToCustomerRequests(
+        account.address,
+        (event) => {
+          if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
+            // Reload requests when new ones arrive or existing ones update
+            loadRequests()
+          }
+        }
+      )
+
+      return () => {
+        subscription.unsubscribe()
+      }
     }
   }, [account?.address])
 

@@ -6,6 +6,7 @@ import { GridBackground, SectionDivider, ButtonPurple, StatCard } from "@/compon
 import { ProductSwitcher } from "@/components/product-switcher"
 import { DollarSign, TrendingUp, Wallet, ArrowUpRight, Loader2 } from "lucide-react"
 import { getEarnings, getEarningsStats, type Earning } from "@/lib/api/earnings"
+import { subscribeToEarnings } from "@/lib/supabase/realtime"
 
 export default function MynEarnings() {
   const [transactions, setTransactions] = useState<Earning[]>([])
@@ -21,6 +22,18 @@ export default function MynEarnings() {
 
   useEffect(() => {
     loadEarnings()
+
+    // Subscribe to realtime updates
+    const subscription = subscribeToEarnings((event) => {
+      if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
+        // Reload earnings when new ones arrive or existing ones update
+        loadEarnings()
+      }
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   async function loadEarnings() {

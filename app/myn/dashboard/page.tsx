@@ -9,6 +9,7 @@ import { useWallet } from "@/lib/polkadot/wallet-context"
 import { getPendingCustomerRequests, getActiveRequests, type DataAccessRequest } from "@/lib/api/data-access-requests"
 import { getEarningsStats } from "@/lib/api/earnings"
 import { getVaultStats } from "@/lib/api/vault"
+import { subscribeToCustomerRequests, subscribeToEarnings } from "@/lib/supabase/realtime"
 
 export default function MynDashboard() {
   const { account } = useWallet()
@@ -21,6 +22,27 @@ export default function MynDashboard() {
   useEffect(() => {
     if (account?.address) {
       loadDashboardData()
+
+      // Subscribe to realtime updates for requests and earnings
+      const requestsSubscription = subscribeToCustomerRequests(
+        account.address,
+        (event) => {
+          if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
+            loadDashboardData()
+          }
+        }
+      )
+
+      const earningsSubscription = subscribeToEarnings((event) => {
+        if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
+          loadDashboardData()
+        }
+      })
+
+      return () => {
+        requestsSubscription.unsubscribe()
+        earningsSubscription.unsubscribe()
+      }
     }
   }, [account?.address])
 
@@ -172,25 +194,27 @@ export default function MynDashboard() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {[
-                  { company: 'Acme Corp', fields: 3, amount: '5 DOT', status: 'pending' },
-                  { company: 'TechStart', fields: 5, amount: '8 DOT', status: 'pending' },
-                  { company: 'InnovateCo', fields: 2, amount: '3 DOT', status: 'approved' },
-                ].map((req, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
-                    <div>
-                      <div className="text-base text-white mb-1">{req.company}</div>
-                      <div className="text-sm text-white/40">{req.fields} fields " {req.amount}</div>
-                    </div>
-                    <div className={`px-3 py-1 rounded-full text-xs uppercase tracking-[0.15em] ${
-                      req.status === 'pending'
-                        ? 'bg-yellow-500/10 border border-yellow-500/20 text-yellow-400'
-                        : 'bg-green-500/10 border border-green-500/20 text-green-400'
-                    }`}>
-                      {req.status}
-                    </div>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
-                ))}
+                ) : pendingRequests.length === 0 ? (
+                  <div className="text-center py-8 text-white/40">
+                    No pending requests
+                  </div>
+                ) : (
+                  pendingRequests.slice(0, 3).map((req) => (
+                    <div key={req.id} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
+                      <div>
+                        <div className="text-base text-white mb-1">{req.customer_name || 'Unknown Business'}</div>
+                        <div className="text-sm text-white/40">{req.requested_fields.length} fields · {req.payment_amount} {req.payment_currency}</div>
+                      </div>
+                      <div className="px-3 py-1 rounded-full text-xs uppercase tracking-[0.15em] bg-yellow-500/10 border border-yellow-500/20 text-yellow-400">
+                        pending
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -203,21 +227,32 @@ export default function MynDashboard() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {[
-                  { company: 'GlobalTech', expires: '15 days', fields: 4 },
-                  { company: 'DataCorp', expires: '22 days', fields: 3 },
-                  { company: 'SalesHub', expires: '8 days', fields: 6 },
-                ].map((access, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
-                    <div>
-                      <div className="text-base text-white mb-1">{access.company}</div>
-                      <div className="text-sm text-white/40">{access.fields} fields</div>
-                    </div>
-                    <div className="text-xs text-white/30 uppercase tracking-[0.15em]">
-                      {access.expires}
-                    </div>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
-                ))}
+                ) : activeGrants.length === 0 ? (
+                  <div className="text-center py-8 text-white/40">
+                    No active grants
+                  </div>
+                ) : (
+                  activeGrants.slice(0, 3).map((grant) => {
+                    const daysLeft = grant.expires_at
+                      ? Math.ceil((new Date(grant.expires_at).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+                      : 0
+                    return (
+                      <div key={grant.id} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
+                        <div>
+                          <div className="text-base text-white mb-1">{grant.customer_name || 'Unknown Business'}</div>
+                          <div className="text-sm text-white/40">{grant.requested_fields.length} fields</div>
+                        </div>
+                        <div className="text-xs text-white/30 uppercase tracking-[0.15em]">
+                          {daysLeft} {daysLeft === 1 ? 'day' : 'days'}
+                        </div>
+                      </div>
+                    )
+                  })
+                )}
               </div>
             </div>
           </div>
