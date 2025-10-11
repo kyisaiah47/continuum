@@ -1,4 +1,5 @@
 import { supabase } from '../supabase/client'
+import { getSessionUserId } from "@/lib/api/auth"
 
 export type UserProfile = {
   id: string
@@ -11,13 +12,13 @@ export type UserProfile = {
 }
 
 export async function getUserProfile(): Promise<UserProfile | null> {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
+  const userId = getSessionUserId()
+  if (!userId) throw new Error('Not authenticated')
 
   const { data, error } = await supabase
     .from('ownbase_user_profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   if (error) {
@@ -32,8 +33,8 @@ export async function getUserProfile(): Promise<UserProfile | null> {
 }
 
 export async function updateWalletAddress(walletAddress: string): Promise<UserProfile> {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
+  const userId = getSessionUserId()
+  if (!userId) throw new Error('Not authenticated')
 
   // Check if profile exists
   const existingProfile = await getUserProfile()
@@ -46,7 +47,7 @@ export async function updateWalletAddress(walletAddress: string): Promise<UserPr
         wallet_address: walletAddress,
         updated_at: new Date().toISOString()
       })
-      .eq('id', user.id)
+      .eq('id', userId)
       .select()
       .single()
 
@@ -57,8 +58,7 @@ export async function updateWalletAddress(walletAddress: string): Promise<UserPr
     const { data, error } = await supabase
       .from('ownbase_user_profiles')
       .insert([{
-        id: user.id,
-        email: user.email,
+        id: userId,
         wallet_address: walletAddress
       }])
       .select()
@@ -70,8 +70,8 @@ export async function updateWalletAddress(walletAddress: string): Promise<UserPr
 }
 
 export async function updateUserProfile(updates: Partial<UserProfile>): Promise<UserProfile> {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
+  const userId = getSessionUserId()
+  if (!userId) throw new Error('Not authenticated')
 
   const { data, error } = await supabase
     .from('ownbase_user_profiles')
@@ -79,7 +79,7 @@ export async function updateUserProfile(updates: Partial<UserProfile>): Promise<
       ...updates,
       updated_at: new Date().toISOString()
     })
-    .eq('id', user.id)
+    .eq('id', userId)
     .select()
     .single()
 
@@ -88,16 +88,16 @@ export async function updateUserProfile(updates: Partial<UserProfile>): Promise<
 }
 
 export async function clearWalletAddress(): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) throw new Error('Not authenticated')
+  const userId = getSessionUserId()
+  if (!userId) throw new Error('Not authenticated')
 
-  const { error } = await supabase
+  const { error} = await supabase
     .from('ownbase_user_profiles')
     .update({
       wallet_address: null,
       updated_at: new Date().toISOString()
     })
-    .eq('id', user.id)
+    .eq('id', userId)
 
   if (error) throw error
 }

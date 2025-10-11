@@ -1,4 +1,5 @@
 // Data Access Requests API Functions
+import { getSessionUserId } from "@/lib/api/auth"
 import { createClient } from "@/lib/supabase/client"
 
 export interface DataAccessRequest {
@@ -70,13 +71,13 @@ export async function createDataAccessRequest(
 ): Promise<DataAccessRequest> {
   const supabase = createClient()
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) throw new Error("Not authenticated")
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
 
   const { data, error } = await supabase
     .from("ownbase_data_access_requests")
     .insert({
-      business_user_id: user.id,
+      business_user_id: userId,
       ...request,
       status: "pending",
       payment_currency: "DOT",

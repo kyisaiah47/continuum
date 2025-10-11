@@ -1,4 +1,5 @@
 import { supabase, type Task } from '../supabase-client';
+import { getSessionUserId } from "@/lib/api/auth"
 
 export async function getTasks() {
   const { data, error } = await supabase
@@ -44,12 +45,12 @@ export async function getTasksByDealId(dealId: string) {
 }
 
 export async function createTask(task: Omit<Task, 'id' | 'created_at' | 'updated_at'>) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Not authenticated');
+  const userId = getSessionUserId();
+  if (!userId) throw new Error('Not authenticated');
 
   const { data, error } = await supabase
     .from('ownbase_tasks')
-    .insert([{ ...task, user_id: user.id }])
+    .insert([{ ...task, user_id: userId }])
     .select()
     .single();
 

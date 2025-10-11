@@ -1,4 +1,5 @@
 import { supabase } from '../supabase-client'
+import { getSessionUserId } from "@/lib/api/auth"
 import crypto from 'crypto'
 
 export type ApiKey = {
@@ -36,16 +37,16 @@ function generateApiKey(prefix: string = 'ck_live'): { key: string; hash: string
  * Get all API keys for the current user
  */
 export async function getApiKeys(): Promise<ApiKey[]> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const userId = getSessionUserId()
 
-  if (!user) {
+  if (!userId) {
     throw new Error('User not authenticated')
   }
 
   const { data, error } = await supabase
     .from('ownbase_api_keys')
     .select('*')
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -59,9 +60,9 @@ export async function getApiKeys(): Promise<ApiKey[]> {
  * Create a new API key
  */
 export async function createApiKey(name: string, environment: 'live' | 'test' = 'live'): Promise<ApiKeyWithPlainKey> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const userId = getSessionUserId()
 
-  if (!user) {
+  if (!userId) {
     throw new Error('User not authenticated')
   }
 
@@ -78,7 +79,7 @@ export async function createApiKey(name: string, environment: 'live' | 'test' = 
   const { data, error } = await supabase
     .from('ownbase_api_keys')
     .insert([{
-      user_id: user.id,
+      user_id: userId,
       name: name.trim(),
       key_hash: hash,
       key_prefix: keyPrefix,
@@ -106,9 +107,9 @@ export async function updateApiKey(
   keyId: string,
   updates: { name?: string; status?: 'active' | 'inactive' }
 ): Promise<ApiKey> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const userId = getSessionUserId()
 
-  if (!user) {
+  if (!userId) {
     throw new Error('User not authenticated')
   }
 
@@ -116,7 +117,7 @@ export async function updateApiKey(
     .from('ownbase_api_keys')
     .update(updates)
     .eq('id', keyId)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .select()
     .single()
 
@@ -131,9 +132,9 @@ export async function updateApiKey(
  * Revoke an API key (soft delete by setting status to revoked)
  */
 export async function revokeApiKey(keyId: string): Promise<ApiKey> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const userId = getSessionUserId()
 
-  if (!user) {
+  if (!userId) {
     throw new Error('User not authenticated')
   }
 
@@ -141,7 +142,7 @@ export async function revokeApiKey(keyId: string): Promise<ApiKey> {
     .from('ownbase_api_keys')
     .update({ status: 'revoked' })
     .eq('id', keyId)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
     .select()
     .single()
 
@@ -156,9 +157,9 @@ export async function revokeApiKey(keyId: string): Promise<ApiKey> {
  * Delete an API key permanently
  */
 export async function deleteApiKey(keyId: string): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const userId = getSessionUserId()
 
-  if (!user) {
+  if (!userId) {
     throw new Error('User not authenticated')
   }
 
@@ -166,7 +167,7 @@ export async function deleteApiKey(keyId: string): Promise<void> {
     .from('ownbase_api_keys')
     .delete()
     .eq('id', keyId)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
   if (error) {
     throw error
@@ -177,9 +178,9 @@ export async function deleteApiKey(keyId: string): Promise<void> {
  * Increment the request count for an API key (used internally)
  */
 export async function incrementApiKeyUsage(keyId: string): Promise<void> {
-  const { data: { user } } = await supabase.auth.getUser()
+  const userId = getSessionUserId()
 
-  if (!user) {
+  if (!userId) {
     throw new Error('User not authenticated')
   }
 
@@ -190,7 +191,7 @@ export async function incrementApiKeyUsage(keyId: string): Promise<void> {
       last_used_at: new Date().toISOString()
     })
     .eq('id', keyId)
-    .eq('user_id', user.id)
+    .eq('user_id', userId)
 
   if (error) {
     console.error('Failed to increment API key usage:', error)

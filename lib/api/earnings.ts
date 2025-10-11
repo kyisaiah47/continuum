@@ -1,4 +1,5 @@
 // Earnings API Functions
+import { getSessionUserId } from "@/lib/api/auth"
 import { createClient } from "@/lib/supabase/client"
 
 export interface Earning {
@@ -108,13 +109,13 @@ export async function createEarning(
 ): Promise<Earning> {
   const supabase = createClient()
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) throw new Error("Not authenticated")
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
 
   const { data, error } = await supabase
     .from("ownbase_earnings")
     .insert({
-      user_id: user.id,
+      user_id: userId,
       ...earning,
       status: "pending",
     })

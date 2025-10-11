@@ -1,4 +1,5 @@
 import { supabase, type Deal } from '../supabase-client';
+import { getSessionUserId } from "@/lib/api/auth"
 
 export async function getDeals() {
   const { data, error } = await supabase
@@ -34,12 +35,12 @@ export async function getDealsByStage(stage: Deal['stage']) {
 
 export async function createDeal(deal: Omit<Deal, 'id' | 'created_at' | 'updated_at'>) {
   // Get the current user
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Not authenticated');
+  const userId = getSessionUserId();
+  if (!userId) throw new Error('Not authenticated');
 
   const { data, error } = await supabase
     .from('ownbase_deals')
-    .insert([{ ...deal, user_id: user.id }])
+    .insert([{ ...deal, user_id: userId }])
     .select()
     .single();
 

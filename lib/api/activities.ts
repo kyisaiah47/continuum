@@ -1,4 +1,5 @@
 import { supabase, type Activity } from '../supabase-client';
+import { getSessionUserId } from "@/lib/api/auth"
 
 export async function getActivities() {
   const { data, error } = await supabase
@@ -44,12 +45,12 @@ export async function getActivitiesByDealId(dealId: string) {
 }
 
 export async function createActivity(activity: Omit<Activity, 'id' | 'created_at'>) {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('Not authenticated');
+  const userId = getSessionUserId();
+  if (!userId) throw new Error('Not authenticated');
 
   const { data, error } = await supabase
     .from('ownbase_activities')
-    .insert([{ ...activity, user_id: user.id }])
+    .insert([{ ...activity, user_id: userId }])
     .select()
     .single();
 

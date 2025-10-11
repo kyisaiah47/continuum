@@ -1,5 +1,6 @@
 // Data Vault API Functions
 import { createClient } from "@/lib/supabase/client"
+import { getSessionUserId } from "@/lib/api/auth"
 
 export interface VaultField {
   id: string
@@ -106,13 +107,13 @@ export async function createVaultField(
 ): Promise<VaultField> {
   const supabase = createClient()
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) throw new Error("Not authenticated")
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
 
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .insert({
-      user_id: user.id,
+      user_id: userId,
       ...field,
     })
     .select()
@@ -138,11 +139,11 @@ export async function deleteVaultField(fieldId: string): Promise<void> {
 export async function seedDefaultVaultFields(): Promise<void> {
   const supabase = createClient()
 
-  const { data: { user }, error: userError } = await supabase.auth.getUser()
-  if (userError || !user) throw new Error("Not authenticated")
+  const userId = getSessionUserId()
+  if (!userId) throw new Error("Not authenticated")
 
   const { error } = await supabase.rpc("seed_default_vault_fields", {
-    p_user_id: user.id,
+    p_user_id: userId,
   })
 
   if (error) throw error
