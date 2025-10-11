@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard } from "@/components/ui/plural"
 import { ProductSwitcher } from "@/components/product-switcher"
+import { ContinuumLogo } from "@/components/brand/continuum-logo"
 import { EthosLogo } from "@/components/brand/ethos-logo"
 import {
   ArrowRight, ArrowLeft, Shield, Users, Check, TrendingUp,
