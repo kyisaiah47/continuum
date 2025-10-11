@@ -1,0 +1,66 @@
+
+> continuum@0.1.0 build
+> next build --turbopack
+
+ ⚠ Invalid next.config.ts options detected: 
+ ⚠     Unrecognized key(s) in object: 'suppressHydrationWarning' at "experimental"
+ ⚠ See more info here: https://nextjs.org/docs/messages/invalid-next-config
+   ▲ Next.js 15.5.4 (Turbopack)
+   - Environments: .env.local
+   - Experiments (use with caution):
+     ✓ suppressHydrationWarning
+
+   Creating an optimized production build ...
+ ✓ Finished writing to disk in 283ms
+ ✓ Compiled successfully in 8.4s
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+   Generating static pages (0/28) ...
+   Generating static pages (7/28) 
+   Generating static pages (14/28) 
+   Generating static pages (21/28) 
+ ✓ Generating static pages (28/28)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                         Size  First Load JS
+┌ ○ /                            7.97 kB         142 kB
+├ ○ /_not-found                      0 B         125 kB
+├ ○ /continuum/api-keys          8.29 kB         186 kB
+├ ○ /continuum/contracts         8.22 kB         186 kB
+├ ○ /continuum/dashboard         7.93 kB         186 kB
+├ ○ /continuum/docs              8.59 kB         187 kB
+├ ○ /continuum/explorer             8 kB         186 kB
+├ ○ /continuum/playground        8.71 kB         187 kB
+├ ○ /ethos                       10.2 kB         144 kB
+├ ○ /ethos/activities            7.86 kB         142 kB
+├ ○ /ethos/contacts              9.79 kB         200 kB
+├ ƒ /ethos/contacts/[id]         58.5 kB         227 kB
+├ ○ /ethos/dashboard             7.01 kB         141 kB
+├ ○ /ethos/data-access           9.46 kB         200 kB
+├ ○ /ethos/deals                 52.1 kB         242 kB
+├ ○ /ethos/tasks                 7.86 kB         142 kB
+├ ○ /login                        6.7 kB         185 kB
+├ ○ /myn                         9.85 kB         145 kB
+├ ○ /myn/access                  8.44 kB         187 kB
+├ ○ /myn/dashboard               10.5 kB         189 kB
+├ ○ /myn/earnings                9.11 kB         188 kB
+├ ○ /myn/requests                9.38 kB         188 kB
+├ ○ /myn/settings                7.92 kB         187 kB
+├ ○ /myn/vault                   8.42 kB         187 kB
+├ ○ /protocol                    11.2 kB         145 kB
+└ ○ /signup                      6.92 kB         185 kB
++ First Load JS shared by all     147 kB
+  ├ chunks/2008ffcf9e5b170c.js     13 kB
+  ├ chunks/30cb146bc1e6f45f.js   59.2 kB
+  └ chunks/d54b50666d053b37.js   17.2 kB
+  ├ chunks/493bdb97494bd100.css  20.9 kB
+  └ other shared chunks (total)  36.6 kB
+
+
+ƒ Middleware                     39.1 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
