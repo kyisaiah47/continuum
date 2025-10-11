@@ -1,182 +1,298 @@
-"use client";
+"use client"
 
-import { AppSidebar } from "@/components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Plus, Wallet, Clock, DollarSign, Shield } from "lucide-react";
-import { mockDataAccessRequests } from "@/lib/mock-data";
+import Link from "next/link"
+import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
+import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { Plus, Wallet, Clock, DollarSign, Shield, Lock, AlertCircle } from "lucide-react"
+import { mockDataAccessRequests } from "@/lib/mock-data"
 
 export default function DataAccessPage() {
-  const activeRequests = mockDataAccessRequests.filter((r) => r.status === "approved");
-  const pendingRequests = mockDataAccessRequests.filter((r) => r.status === "pending");
+  const activeRequests = mockDataAccessRequests.filter((r) => r.status === "approved")
+  const pendingRequests = mockDataAccessRequests.filter((r) => r.status === "pending")
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        } as React.CSSProperties
-      }
-    >
-      <AppSidebar variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-          {/* Info Card */}
-          <Card className="p-6 bg-gradient-to-r from-purple-500/10 to-blue-500/10 border-purple-500/20">
-            <div className="flex items-start gap-4">
-              <Shield className="h-8 w-8 text-purple-400" />
-              <div>
-                <h3 className="font-semibold text-lg mb-1">Customer-Owned Data</h3>
-                <p className="text-sm text-muted-foreground">
-                  Request temporary access to customer data stored in their Polkadot wallets.
-                  Pay in DOT tokens for time-limited access. Customers maintain full control.
-                </p>
-              </div>
+    <GridBackground showCorners className="min-h-screen">
+      {/* Header */}
+      <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
+        <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-all p-2">
+              <ContinuumLogo className="h-full w-full text-primary" />
             </div>
-          </Card>
+            <div className="flex flex-col">
+              <span className="text-base font-semibold tracking-tight">Continuum</span>
+              <span className="text-[10px] text-white/40 uppercase tracking-[0.15em]">Data Access</span>
+            </div>
+          </Link>
 
-          {/* Active Requests */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Active Access ({activeRequests.length})</h2>
-            <div className="space-y-3">
-              {activeRequests.map((request) => {
-                const daysLeft = Math.ceil(
-                  (new Date(request.expiresAt!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-                );
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/dashboard" className="text-sm text-white/60 hover:text-white transition tracking-wide">Dashboard</Link>
+            <Link href="/contacts" className="text-sm text-white/60 hover:text-white transition tracking-wide">Contacts</Link>
+            <Link href="/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
+            <Link href="/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
+            <div className="h-6 w-px bg-white/[0.08]" />
+            <ButtonPurple className="h-9 px-5 text-sm" asChild>
+              <Link href="/data-access">Request Data</Link>
+            </ButtonPurple>
+          </nav>
+        </div>
+      </header>
 
-                return (
-                  <Card key={request.id} className="p-6">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h3 className="font-semibold text-lg">{request.customerName}</h3>
-                          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-                            Active
-                          </Badge>
-                        </div>
+      {/* Main Content */}
+      <main className="pt-32 pb-16 px-8">
+        <div className="max-w-[1400px] mx-auto">
+          {/* Page Title & Actions */}
+          <div className="mb-16 flex items-end justify-between">
+            <div>
+              <h1 className="text-6xl font-light tracking-tight text-white mb-4">
+                Data Access
+              </h1>
+              <p className="text-xl text-white/50">
+                Request temporary access to customer-owned data
+              </p>
+            </div>
+            <ButtonPurple className="h-12 px-6 text-base">
+              <Plus className="mr-2 h-4 w-4" />
+              New Request
+            </ButtonPurple>
+          </div>
 
-                        <div className="grid grid-cols-2 gap-4 mb-4">
-                          <div>
-                            <p className="text-sm text-muted-foreground mb-1">Wallet Address</p>
-                            <code className="text-xs font-mono bg-muted px-2 py-1 rounded">
-                              {request.customerWallet.slice(0, 8)}...{request.customerWallet.slice(-6)}
-                            </code>
-                          </div>
-                          <div>
-                            <p className="text-sm text-muted-foreground mb-1">Payment</p>
-                            <p className="text-sm font-semibold">
-                              {request.paymentAmount} {request.paymentCurrency}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="mb-4">
-                          <p className="text-sm text-muted-foreground mb-2">Access to Fields:</p>
-                          <div className="flex gap-2">
-                            {request.requestedFields.map((field) => (
-                              <Badge key={field} variant="secondary">
-                                {field}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-6 text-sm">
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span className={daysLeft <= 7 ? "text-orange-600 font-medium" : "text-muted-foreground"}>
-                              {daysLeft} days remaining
-                            </span>
-                          </div>
-                          <div className="text-muted-foreground">
-                            Expires: {new Date(request.expiresAt!).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </div>
-
-                      <Button variant="outline">Extend</Button>
-                    </div>
-                  </Card>
-                );
-              })}
-              {activeRequests.length === 0 && (
-                <Card className="p-8 text-center text-muted-foreground">
-                  No active data access
-                </Card>
-              )}
+          {/* Info Card */}
+          <div className="mb-16 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-lg p-8">
+            <div className="flex gap-6">
+              <div className="flex-shrink-0">
+                <div className="h-12 w-12 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
+              </div>
+              <div>
+                <h3 className="text-xl font-light text-white mb-2">Customer-Owned Data on Polkadot</h3>
+                <p className="text-base text-white/60 leading-relaxed mb-4">
+                  Request temporary access to customer data stored in their Polkadot wallets.
+                  Pay in DOT tokens for time-limited access. Customers maintain full control and can revoke at any time.
+                </p>
+                <div className="flex items-center gap-6 text-sm text-white/40">
+                  <div className="flex items-center gap-2">
+                    <Lock className="h-4 w-4" />
+                    <span>End-to-end encrypted</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4" />
+                    <span>Time-limited access</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Wallet className="h-4 w-4" />
+                    <span>Smart contract secured</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Pending Requests */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Pending Approval ({pendingRequests.length})</h2>
-            <div className="space-y-3">
-              {pendingRequests.map((request) => (
-                <Card key={request.id} className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <h3 className="font-semibold text-lg">{request.customerName}</h3>
-                        <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
-                          Pending
-                        </Badge>
+          <SectionDivider label={`${activeRequests.length} Active Access Grants`} />
+
+          {/* Active Requests */}
+          <div className="mt-16">
+            {activeRequests.length === 0 && (
+              <div className="text-center py-32">
+                <Lock className="h-24 w-24 mx-auto mb-8 text-white/20" />
+                <h3 className="text-3xl font-light text-white mb-4">No active access</h3>
+                <p className="text-lg text-white/50 mb-8">
+                  Request access to customer data to get started
+                </p>
+                <ButtonPurple className="h-12 px-8 text-base">
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Request
+                </ButtonPurple>
+              </div>
+            )}
+
+            {activeRequests.length > 0 && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {activeRequests.map((request) => {
+                  const daysLeft = Math.ceil(
+                    (new Date(request.expiresAt!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+                  )
+                  const isExpiringSoon = daysLeft <= 7
+
+                  return (
+                    <div
+                      key={request.id}
+                      className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8 hover:bg-white/[0.05] transition-all group relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
+
+                      <div className="flex items-start justify-between mb-6">
+                        <div>
+                          <h3 className="text-2xl font-light text-white mb-2">{request.customerName}</h3>
+                          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                            <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+                            <span className="text-xs text-green-400 uppercase tracking-[0.15em]">Active</span>
+                          </div>
+                        </div>
+                        <ButtonPurple className="h-9 px-4 text-sm">
+                          Extend
+                        </ButtonPurple>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="space-y-4 mb-6">
                         <div>
-                          <p className="text-sm text-muted-foreground mb-1">Wallet Address</p>
-                          <code className="text-xs font-mono bg-muted px-2 py-1 rounded">
-                            {request.customerWallet.slice(0, 8)}...{request.customerWallet.slice(-6)}
+                          <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Wallet Address</p>
+                          <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08]">
+                            {request.customerWallet.slice(0, 12)}...{request.customerWallet.slice(-8)}
                           </code>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground mb-1">Offered Payment</p>
-                          <p className="text-sm font-semibold">
-                            {request.paymentAmount} {request.paymentCurrency}
-                          </p>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Payment</p>
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-xl font-light text-white">{request.paymentAmount}</span>
+                              <span className="text-sm text-white/50">{request.paymentCurrency}</span>
+                            </div>
+                          </div>
+                          <div>
+                            <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Expires In</p>
+                            <div className="flex items-baseline gap-2">
+                              <span className={`text-xl font-light ${isExpiringSoon ? "text-yellow-400" : "text-white"}`}>
+                                {daysLeft}
+                              </span>
+                              <span className="text-sm text-white/50">days</span>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="mb-4">
-                        <p className="text-sm text-muted-foreground mb-2">Requested Fields:</p>
-                        <div className="flex gap-2">
+                      <div className="mb-6">
+                        <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-3">Access to Fields</p>
+                        <div className="flex flex-wrap gap-2">
                           {request.requestedFields.map((field) => (
-                            <Badge key={field} variant="secondary">
+                            <span
+                              key={field}
+                              className="px-2 py-1 rounded bg-white/[0.03] border border-white/[0.08] text-xs text-white/60"
+                            >
                               {field}
-                            </Badge>
+                            </span>
                           ))}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        Duration: {request.accessDurationDays} days
+                      {isExpiringSoon && (
+                        <div className="flex items-center gap-2 px-3 py-2 rounded bg-yellow-500/10 border border-yellow-500/20">
+                          <AlertCircle className="h-4 w-4 text-yellow-400" />
+                          <span className="text-sm text-yellow-400">Expiring soon - consider extending</span>
+                        </div>
+                      )}
+
+                      <div className="mt-6 pt-6 border-t border-white/[0.05] text-xs text-white/30 uppercase tracking-[0.15em]">
+                        Expires: {new Date(request.expiresAt!).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+
+          <SectionDivider label={`${pendingRequests.length} Pending Approval`} className="mt-24" />
+
+          {/* Pending Requests */}
+          <div className="mt-16">
+            {pendingRequests.length === 0 && (
+              <div className="text-center py-16">
+                <p className="text-base text-white/40">No pending requests</p>
+              </div>
+            )}
+
+            {pendingRequests.length > 0 && (
+              <div className="grid md:grid-cols-2 gap-6">
+                {pendingRequests.map((request) => (
+                  <div
+                    key={request.id}
+                    className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8 hover:bg-white/[0.05] transition-all group relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
+
+                    <div className="flex items-start justify-between mb-6">
+                      <div>
+                        <h3 className="text-2xl font-light text-white mb-2">{request.customerName}</h3>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-500/10 border border-yellow-500/20">
+                          <Clock className="h-3 w-3 text-yellow-400" />
+                          <span className="text-xs text-yellow-400 uppercase tracking-[0.15em]">Pending</span>
+                        </div>
+                      </div>
+                      <button className="text-sm text-white/40 hover:text-white/60 transition">
+                        Cancel
+                      </button>
+                    </div>
+
+                    <div className="space-y-4 mb-6">
+                      <div>
+                        <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Wallet Address</p>
+                        <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08]">
+                          {request.customerWallet.slice(0, 12)}...{request.customerWallet.slice(-8)}
+                        </code>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Offered Payment</p>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-xl font-light text-white">{request.paymentAmount}</span>
+                            <span className="text-sm text-white/50">{request.paymentCurrency}</span>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-2">Duration</p>
+                          <div className="flex items-baseline gap-2">
+                            <span className="text-xl font-light text-white">{request.accessDurationDays}</span>
+                            <span className="text-sm text-white/50">days</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm">Cancel</Button>
+                    <div>
+                      <p className="text-xs text-white/40 uppercase tracking-[0.15em] mb-3">Requested Fields</p>
+                      <div className="flex flex-wrap gap-2">
+                        {request.requestedFields.map((field) => (
+                          <span
+                            key={field}
+                            className="px-2 py-1 rounded bg-white/[0.03] border border-white/[0.08] text-xs text-white/60"
+                          >
+                            {field}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-6 pt-6 border-t border-white/[0.05]">
+                      <p className="text-xs text-white/30">
+                        Waiting for customer approval via smart contract
+                      </p>
                     </div>
                   </div>
-                </Card>
-              ))}
-              {pendingRequests.length === 0 && (
-                <Card className="p-8 text-center text-muted-foreground">
-                  No pending requests
-                </Card>
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-      </SidebarInset>
-    </SidebarProvider>
-  );
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-white/[0.08] px-8 py-8">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+          <p className="text-xs text-white/30">© 2025 Continuum. Built on Polkadot.</p>
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-green-500" />
+            <span className="text-xs text-white/30">Network Online</span>
+          </div>
+        </div>
+      </footer>
+    </GridBackground>
+  )
 }
