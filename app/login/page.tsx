@@ -19,7 +19,7 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { error, data } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
@@ -33,7 +33,24 @@ export default function LoginPage() {
       toast.success("Welcome back", {
         description: "Redirecting to dashboard...",
       })
-      router.push("/dashboard")
+
+      // Get last used product from localStorage or database
+      let lastProduct = localStorage.getItem("lastUsedProduct") || "ethos"
+
+      // Try to get from database if user is authenticated
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from("ownbase_user_profiles")
+          .select("last_product")
+          .eq("id", data.user.id)
+          .single()
+
+        if (profile?.last_product) {
+          lastProduct = profile.last_product
+        }
+      }
+
+      router.push(`/${lastProduct}/dashboard`)
     }
   }
 

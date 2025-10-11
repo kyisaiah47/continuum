@@ -63,13 +63,13 @@ export default function ContactsPage() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/dashboard" className="text-sm text-white/60 hover:text-white transition tracking-wide">Dashboard</Link>
-            <Link href="/contacts" className="text-sm text-primary transition tracking-wide">Contacts</Link>
-            <Link href="/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
-            <Link href="/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
+            <Link href="/ethos/dashboard" className="text-sm text-white/60 hover:text-white transition tracking-wide">Dashboard</Link>
+            <Link href="/ethos/contacts" className="text-sm text-primary transition tracking-wide">Contacts</Link>
+            <Link href="/ethos/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
+            <Link href="/ethos/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
             <div className="h-6 w-px bg-white/[0.08]" />
             <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/data-access">Request Data</Link>
+              <Link href="/ethos/data-access">Request Data</Link>
             </ButtonPurple>
           </nav>
         </div>

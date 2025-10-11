@@ -25,13 +25,13 @@ export default function DashboardPage() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <Link href="/dashboard" className="text-sm text-primary transition tracking-wide">Dashboard</Link>
-            <Link href="/contacts" className="text-sm text-white/60 hover:text-white transition tracking-wide">Contacts</Link>
-            <Link href="/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
-            <Link href="/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
+            <Link href="/ethos/dashboard" className="text-sm text-primary transition tracking-wide">Dashboard</Link>
+            <Link href="/ethos/contacts" className="text-sm text-white/60 hover:text-white transition tracking-wide">Contacts</Link>
+            <Link href="/ethos/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
+            <Link href="/ethos/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
             <div className="h-6 w-px bg-white/[0.08]" />
             <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/data-access">Request Data</Link>
+              <Link href="/ethos/data-access">Request Data</Link>
             </ButtonPurple>
           </nav>
         </div>
@@ -62,7 +62,7 @@ export default function DashboardPage() {
 
           {/* Quick Actions */}
           <div className="mt-16 mb-24 grid md:grid-cols-4 gap-px bg-white/[0.03]">
-            <Link href="/contacts" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
+            <Link href="/ethos/contacts" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
               <Users className="h-8 w-8 text-primary mb-4" />
               <h3 className="text-xl font-light text-white mb-2">Contacts</h3>
@@ -73,7 +73,7 @@ export default function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/deals" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
+            <Link href="/ethos/deals" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
               <Briefcase className="h-8 w-8 text-primary mb-4" />
               <h3 className="text-xl font-light text-white mb-2">Deals</h3>
@@ -84,7 +84,7 @@ export default function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/activities" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
+            <Link href="/ethos/activities" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
               <Activity className="h-8 w-8 text-primary mb-4" />
               <h3 className="text-xl font-light text-white mb-2">Activities</h3>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
               </div>
             </Link>
 
-            <Link href="/tasks" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
+            <Link href="/ethos/tasks" className="group bg-background p-8 hover:bg-white/[0.02] transition-all relative overflow-hidden">
               <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
               <CheckSquare className="h-8 w-8 text-primary mb-4" />
               <h3 className="text-xl font-light text-white mb-2">Tasks</h3>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
             <div className="bg-background p-12">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-2xl font-light text-white">Recent Contacts</h3>
-                <Link href="/contacts" className="text-sm text-white/40 hover:text-primary transition uppercase tracking-[0.15em]">
+                <Link href="/ethos/contacts" className="text-sm text-white/40 hover:text-primary transition uppercase tracking-[0.15em]">
                   View All
                 </Link>
               </div>
@@ -140,7 +140,7 @@ export default function DashboardPage() {
             <div className="bg-background p-12">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="text-2xl font-light text-white">Recent Deals</h3>
-                <Link href="/deals" className="text-sm text-white/40 hover:text-primary transition uppercase tracking-[0.15em]">
+                <Link href="/ethos/deals" className="text-sm text-white/40 hover:text-primary transition uppercase tracking-[0.15em]">
                   View All
                 </Link>
               </div>

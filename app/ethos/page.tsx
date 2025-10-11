@@ -33,7 +33,7 @@ export default function EthosPage() {
             <div className="h-6 w-px bg-white/[0.08]" />
             <Link href="/login" className="text-sm text-white/60 hover:text-white transition tracking-wide">Login</Link>
             <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/dashboard">Access Platform</Link>
+              <Link href="/ethos/dashboard">Access Platform</Link>
             </ButtonPurple>
           </nav>
         </div>
@@ -66,7 +66,7 @@ export default function EthosPage() {
 
               <div className="flex items-center gap-4">
                 <ButtonPurple className="h-14 px-8 text-lg" asChild>
-                  <Link href="/dashboard">
+                  <Link href="/ethos/dashboard">
                     <Shield className="mr-2 h-5 w-5" />
                     Access Platform
                   </Link>
@@ -469,7 +469,7 @@ export default function EthosPage() {
               Transform your customer relationships with the ethical CRM built on Polkadot.
             </p>
             <ButtonPurple className="h-14 px-12 text-lg" asChild>
-              <Link href="/dashboard">
+              <Link href="/ethos/dashboard">
                 <Shield className="mr-2 h-5 w-5" />
                 Access Ethos Platform
               </Link>

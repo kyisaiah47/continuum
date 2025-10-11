@@ -53,7 +53,8 @@ export default function SignupPage() {
       toast.success("Welcome to Continuum", {
         description: "Your account has been created successfully.",
       })
-      router.push("/dashboard")
+      // Redirect to ethos dashboard for new users (default product)
+      router.push("/ethos/dashboard")
     }
   }
 
