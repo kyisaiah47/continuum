@@ -9,6 +9,13 @@ import { useWallet } from "@/lib/polkadot/wallet-context"
 export default function MynSettings() {
   const { account, connect, disconnect, isConnecting } = useWallet()
 
+  // DEMO: Use hardcoded demo wallet if no wallet connected
+  const demoWallet = {
+    address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+    meta: { name: 'Demo Wallet' }
+  }
+  const displayWallet = account || demoWallet
+
   return (
     <GridBackground showCorners className="min-h-screen">
       <MynHeader currentPage="settings" />
@@ -31,41 +38,27 @@ export default function MynSettings() {
               Wallet Connection
             </h2>
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8">
-              {account ? (
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-base text-white mb-2">Connected Wallet</div>
-                    <div className="space-y-2">
-                      {account.meta.name && (
-                        <div className="text-sm text-white/60">{account.meta.name}</div>
-                      )}
-                      <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08] block">
-                        {account.address}
-                      </code>
-                    </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-base text-white mb-2">Connected Wallet</div>
+                  <div className="space-y-2">
+                    {displayWallet.meta.name && (
+                      <div className="text-sm text-white/60">{displayWallet.meta.name}</div>
+                    )}
+                    <code className="text-sm font-mono text-primary bg-white/[0.03] px-3 py-1 rounded border border-white/[0.08] block">
+                      {displayWallet.address}
+                    </code>
                   </div>
+                </div>
+                {account && (
                   <button
                     onClick={disconnect}
                     className="px-6 py-2 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.05] text-white/60 hover:text-white transition-all"
                   >
                     Disconnect
                   </button>
-                </div>
-              ) : (
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-base text-white mb-2">No Wallet Connected</div>
-                    <p className="text-sm text-white/40">Connect your Polkadot wallet to access your data vault</p>
-                  </div>
-                  <ButtonPurple
-                    onClick={connect}
-                    disabled={isConnecting}
-                    className="h-10 px-6 text-sm"
-                  >
-                    {isConnecting ? "Connecting..." : "Connect Wallet"}
-                  </ButtonPurple>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
