@@ -15,17 +15,17 @@ export default function MynAccess() {
   const [isLoading, setIsLoading] = useState(true)
   const [revokingId, setRevokingId] = useState<string | null>(null)
 
+  // DEMO: Use hardcoded wallet address
+  const walletAddress = account?.address || '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+
   useEffect(() => {
-    if (account?.address) {
-      loadActiveGrants()
-    }
-  }, [account?.address])
+    loadActiveGrants()
+  }, [walletAddress])
 
   async function loadActiveGrants() {
-    if (!account?.address) return
     try {
       setIsLoading(true)
-      const data = await getActiveRequests(account.address)
+      const data = await getActiveRequests(walletAddress)
       setActiveGrants(data)
     } catch (error) {
       console.error("Failed to load active grants:", error)

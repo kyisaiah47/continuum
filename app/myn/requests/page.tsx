@@ -17,32 +17,32 @@ export default function MynRequests() {
   const [isLoading, setIsLoading] = useState(true)
   const [processingId, setProcessingId] = useState<string | null>(null)
 
+  // DEMO: Use hardcoded wallet address
+  const walletAddress = account?.address || '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+
   useEffect(() => {
-    if (account?.address) {
-      loadRequests()
+    loadRequests()
 
-      // Subscribe to realtime updates
-      const subscription = subscribeToCustomerRequests(
-        account.address,
-        (event) => {
-          if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
-            // Reload requests when new ones arrive or existing ones update
-            loadRequests()
-          }
+    // Subscribe to realtime updates
+    const subscription = subscribeToCustomerRequests(
+      walletAddress,
+      (event) => {
+        if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
+          // Reload requests when new ones arrive or existing ones update
+          loadRequests()
         }
-      )
-
-      return () => {
-        subscription.unsubscribe()
       }
+    )
+
+    return () => {
+      subscription.unsubscribe()
     }
-  }, [account?.address])
+  }, [walletAddress])
 
   async function loadRequests() {
-    if (!account?.address) return
     try {
       setIsLoading(true)
-      const data = await getPendingCustomerRequests(account.address)
+      const data = await getPendingCustomerRequests(walletAddress)
       setRequests(data)
     } catch (error) {
       console.error("Failed to load requests:", error)

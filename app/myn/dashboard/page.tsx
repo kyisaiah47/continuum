@@ -19,39 +19,40 @@ export default function MynDashboard() {
   const [totalEarnings, setTotalEarnings] = useState(0)
   const [sharedFieldsCount, setSharedFieldsCount] = useState(0)
 
+  // DEMO: Use hardcoded wallet address
+  const walletAddress = account?.address || '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+
   useEffect(() => {
-    if (account?.address) {
-      loadDashboardData()
+    loadDashboardData()
 
-      // Subscribe to realtime updates for requests and earnings
-      const requestsSubscription = subscribeToCustomerRequests(
-        account.address,
-        (event) => {
-          if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
-            loadDashboardData()
-          }
-        }
-      )
-
-      const earningsSubscription = subscribeToEarnings((event) => {
+    // Subscribe to realtime updates for requests and earnings
+    const requestsSubscription = subscribeToCustomerRequests(
+      walletAddress,
+      (event) => {
         if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
           loadDashboardData()
         }
-      })
-
-      return () => {
-        requestsSubscription.unsubscribe()
-        earningsSubscription.unsubscribe()
       }
+    )
+
+    const earningsSubscription = subscribeToEarnings((event) => {
+      if (event.eventType === "INSERT" || event.eventType === "UPDATE") {
+        loadDashboardData()
+      }
+    })
+
+    return () => {
+      requestsSubscription.unsubscribe()
+      earningsSubscription.unsubscribe()
     }
-  }, [account?.address])
+  }, [walletAddress])
 
   async function loadDashboardData() {
     try {
       setIsLoading(true)
       const [pending, active, earnings, vaultStats] = await Promise.all([
-        getPendingCustomerRequests(account!.address),
-        getActiveRequests(account!.address),
+        getPendingCustomerRequests(walletAddress),
+        getActiveRequests(walletAddress),
         getEarningsStats(),
         getVaultStats()
       ])
