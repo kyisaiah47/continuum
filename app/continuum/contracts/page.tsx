@@ -14,7 +14,7 @@ export default function ContinuumContracts() {
       id: 1,
       name: "DataAccessControl",
       version: "v2.1.0",
-      address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      address: "5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv",
       deployed: "Jan 15, 2025",
       calls: "1.2M",
       status: "active"

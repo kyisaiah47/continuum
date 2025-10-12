@@ -131,7 +131,7 @@ mod data_access {
                   <div className="text-white/60">Optimizing WASM...</div>
                   <div className="text-green-400">✓ WASM optimization complete</div>
                   <div className="text-white/60">Deploying to test network...</div>
-                  <div className="text-green-400">✓ Contract deployed at: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY</div>
+                  <div className="text-green-400">✓ Contract deployed at: 5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv</div>
                   <div className="text-white/60 mt-4">Ready to execute contract methods</div>
                 </div>
               </div>

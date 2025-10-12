@@ -11,7 +11,7 @@ export default function MynSettings() {
 
   // DEMO: Use hardcoded demo wallet if no wallet connected
   const demoWallet = {
-    address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+    address: '5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv',
     meta: { name: 'Demo Wallet' }
   }
   const displayWallet = account || demoWallet

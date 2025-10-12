@@ -101,7 +101,7 @@ export default function ContinuumDocs() {
 
 const client = new ContinuumClient({
   network: 'polkadot',
-  contract: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+  contract: '5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv'
 })`}
                 </pre>
               </div>

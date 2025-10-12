@@ -48,7 +48,7 @@ async function clearAndReseed() {
         phone: '+1 (555) 123-4567',
         company: 'TechCorp Inc.',
         job_title: 'CTO',
-        wallet_address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+        wallet_address: '5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv',
         has_wallet: true,
         tags: ['vip', 'tech'],
         notes: 'Early adopter of Web3 technologies'

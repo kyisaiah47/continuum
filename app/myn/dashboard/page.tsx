@@ -20,7 +20,7 @@ export default function MynDashboard() {
   const [sharedFieldsCount, setSharedFieldsCount] = useState(0)
 
   // DEMO: Use hardcoded wallet address
-  const walletAddress = account?.address || '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+  const walletAddress = account?.address || '5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv'
 
   useEffect(() => {
     loadDashboardData()

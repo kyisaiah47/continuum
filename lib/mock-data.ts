@@ -6,7 +6,7 @@ export const mockContacts = [
     phone: "+1 (555) 123-4567",
     company: "Acme Corp",
     jobTitle: "CTO",
-    walletAddress: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+    walletAddress: "5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv",
     hasWallet: true,
     tags: ["VIP", "Enterprise"],
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=John",
@@ -197,7 +197,7 @@ export const mockTasks = [
 export const mockDataAccessRequests = [
   {
     id: "1",
-    customerWallet: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+    customerWallet: "5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv",
     customerName: "John Doe",
     requestedFields: ["email", "phone", "purchase_history"],
     accessDurationDays: 30,

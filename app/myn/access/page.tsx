@@ -16,7 +16,7 @@ export default function MynAccess() {
   const [revokingId, setRevokingId] = useState<string | null>(null)
 
   // DEMO: Use hardcoded wallet address
-  const walletAddress = account?.address || '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+  const walletAddress = account?.address || '5EAK3BZNspnebxQeTGaiBUejfxq2ivnQzs9PJAqw4afkYuAv'
 
   useEffect(() => {
     loadActiveGrants()
