@@ -15,8 +15,8 @@ export function createMetadata(override?: Metadata): Metadata {
   return {
     ...override,
     title: override?.title || {
-      default: siteConfig.name,
-      template: `%s | ${siteConfig.name}`,
+      default: `${siteConfig.name} | The Trust Layer`,
+      template: `${siteConfig.name} | %s`,
     },
     description: override?.description || siteConfig.description,
     keywords: [
@@ -63,9 +63,7 @@ export function createMetadata(override?: Metadata): Metadata {
       ...override?.twitter,
     },
     icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon-16x16.png',
-      apple: '/apple-touch-icon.png',
+      icon: '/icon.svg',
     },
     manifest: '/site.webmanifest',
     ...override,
