@@ -2,7 +2,7 @@
 ## The Trust Layer for Data Exchange
 
 <p align="center">
-  <img src=".github/assets/hero-screenshot.png" alt="Continuum Hero" width="100%">
+  <img src="public/hero-screenshot.png" alt="Continuum Hero" width="100%">
 </p>
 
 > **A decentralized data ecosystem where individuals own their information, organizations operate with consent, and every exchange is verified on-chain.**
