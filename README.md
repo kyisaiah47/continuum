@@ -3,7 +3,7 @@
 
 > **A decentralized data ecosystem where individuals own their information, organizations operate with consent, and every exchange is verified on-chain.**
 
-Built for the Polkadot Cloud Hackathon 2025.
+**📹 [Watch Demo Video](https://youtu.be/DrZ8aSibqEQ?si=Buh7WHzPLlPZ0cUp)** | Built for the Polkadot Cloud Hackathon 2025
 
 ---
 
@@ -456,8 +456,8 @@ MIT License - See [LICENSE](./LICENSE) for details
 ## 📞 Support
 
 - **Documentation**: See `/docs` folder and linked guides above
-- **Issues**: [GitHub Issues](https://github.com/yourusername/continuum/issues)
-- **Demo Video**: [Coming Soon]
+- **Issues**: [GitHub Issues](https://github.com/kyisaiah47/continuum/issues)
+- **Demo Video**: [Watch on YouTube](https://youtu.be/DrZ8aSibqEQ)
 
 ---
 
@@ -487,7 +487,7 @@ cargo test               # Run contract tests
 
 *The trust layer for data exchange. Built on Polkadot.*
 
-🌐 **[Live Demo](#)** • 📹 **[Video Demo](#)** • 📄 **[Documentation](./docs)**
+📹 **[Watch Demo Video](https://youtu.be/DrZ8aSibqEQ)** • 📄 **[Documentation](./docs)** • 🌐 **[GitHub](https://github.com/kyisaiah47/continuum)**
 
 ---
 
