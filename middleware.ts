@@ -2,20 +2,44 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(req: NextRequest) {
-  // Protected routes for all three products
+  // Public landing pages - should NOT be protected
+  const publicLandingPages = ['/myn', '/ethos', '/continuum'];
+
+  // Protected routes - dashboard and subroutes only
   const protectedRoutes = [
-    '/myn',
-    '/ethos',
-    '/continuum'
+    '/myn/dashboard',
+    '/myn/vault',
+    '/myn/requests',
+    '/myn/access',
+    '/myn/earnings',
+    '/myn/settings',
+    '/ethos/dashboard',
+    '/ethos/contacts',
+    '/ethos/deals',
+    '/ethos/activities',
+    '/ethos/tasks',
+    '/ethos/data-access',
+    '/continuum/dashboard',
+    '/continuum/contracts',
+    '/continuum/explorer',
+    '/continuum/api-keys',
+    '/continuum/docs',
+    '/continuum/playground'
   ];
   const authRoutes = ['/login', '/signup'];
 
+  const isPublicLandingPage = publicLandingPages.some(route => req.nextUrl.pathname === route);
   const isProtectedRoute = protectedRoutes.some(route => req.nextUrl.pathname.startsWith(route));
   const isAuthRoute = authRoutes.some(route => req.nextUrl.pathname.startsWith(route));
 
   // Check for custom auth session in cookies
   const session = req.cookies.get('continuum_session');
   const isAuthenticated = !!session;
+
+  // Allow public landing pages without auth
+  if (isPublicLandingPage) {
+    return NextResponse.next();
+  }
 
   // Redirect to login if trying to access protected route without auth
   if (isProtectedRoute && !isAuthenticated) {
