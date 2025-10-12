@@ -1,22 +1,18 @@
 "use client"
 
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { LogOut } from "lucide-react"
 import { ProductSwitcher } from "@/components/product-switcher"
 import { ButtonPurple } from "@/components/ui/plural"
-import { supabase } from "@/lib/supabase/client"
+import { logout } from "@/lib/api/auth"
 
 interface MynHeaderProps {
   currentPage?: 'dashboard' | 'vault' | 'requests' | 'access' | 'earnings' | 'settings'
 }
 
 export function MynHeader({ currentPage }: MynHeaderProps) {
-  const router = useRouter()
-
   async function handleLogout() {
-    await supabase.auth.signOut()
-    router.push('/')
+    await logout()
   }
 
   return (
