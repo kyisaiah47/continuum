@@ -1,0 +1,6 @@
+-- Disable RLS for demo purposes
+ALTER TABLE ownbase_contacts DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ownbase_deals DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ownbase_activities DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ownbase_tasks DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ownbase_data_access_requests DISABLE ROW LEVEL SECURITY;

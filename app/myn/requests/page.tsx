@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple } from "@/components/ui/plural"
-import { ProductSwitcher } from "@/components/product-switcher"
+import { MynHeader } from "@/components/myn-header"
 import { Users, Check, X, Clock, DollarSign, Loader2 } from "lucide-react"
 import { getPendingCustomerRequests, approveDataAccessRequest, rejectDataAccessRequest, type DataAccessRequest } from "@/lib/api/data-access-requests"
 import { createEarning } from "@/lib/api/earnings"
@@ -113,22 +113,7 @@ export default function MynRequests() {
 
   return (
     <GridBackground showCorners className="min-h-screen">
-      <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
-        <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
-          <ProductSwitcher />
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/myn/dashboard" className="text-sm text-white/60 hover:text-white transition tracking-wide">Dashboard</Link>
-            <Link href="/myn/vault" className="text-sm text-white/60 hover:text-white transition tracking-wide">Data Vault</Link>
-            <Link href="/myn/requests" className="text-sm text-primary transition tracking-wide">Requests</Link>
-            <Link href="/myn/access" className="text-sm text-white/60 hover:text-white transition tracking-wide">Access</Link>
-            <Link href="/myn/earnings" className="text-sm text-white/60 hover:text-white transition tracking-wide">Earnings</Link>
-            <div className="h-6 w-px bg-white/[0.08]" />
-            <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/myn/settings">Settings</Link>
-            </ButtonPurple>
-          </nav>
-        </div>
-      </header>
+      <MynHeader currentPage="requests" />
 
       <main className="pt-32 pb-16 px-8">
         <div className="max-w-[1400px] mx-auto">

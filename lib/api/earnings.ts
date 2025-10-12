@@ -18,15 +18,48 @@ export interface Earning {
 
 // Get all earnings for the current user
 export async function getEarnings(): Promise<Earning[]> {
-  const supabase = createClient()
-
-  const { data, error } = await supabase
-    .from("ownbase_earnings")
-    .select("*")
-    .order("created_at", { ascending: false })
-
-  if (error) throw error
-  return data || []
+  // DEMO: Return mock data
+  return [
+    {
+      id: "1",
+      user_id: "demo",
+      request_id: "req1",
+      amount: 5.0,
+      currency: "DOT",
+      business_name: "TechCorp Inc.",
+      business_user_id: "business1",
+      transaction_hash: "0x1234567890abcdef",
+      status: "completed",
+      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      paid_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "2",
+      user_id: "demo",
+      request_id: "req2",
+      amount: 10.0,
+      currency: "DOT",
+      business_name: "StartupHub",
+      business_user_id: "business2",
+      transaction_hash: "0xabcdef1234567890",
+      status: "completed",
+      created_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      paid_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "3",
+      user_id: "demo",
+      request_id: "req3",
+      amount: 7.5,
+      currency: "DOT",
+      business_name: "CryptoFinance",
+      business_user_id: "business3",
+      transaction_hash: null,
+      status: "pending",
+      created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      paid_at: null,
+    },
+  ]
 }
 
 // Get earnings statistics

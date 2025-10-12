@@ -197,36 +197,36 @@ export default function DealsPage() {
                       <KanbanCards id={column.id}>
                         {(deal) => (
                           <KanbanCard key={deal.id} id={deal.id} name={deal.name} column={deal.column}>
-                            <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-6 hover:bg-white/[0.05] transition-all cursor-grab active:cursor-grabbing group">
-                              <div className="absolute top-0 left-0 h-px w-0 bg-primary group-hover:w-full transition-all duration-500" />
+                            <div className="relative bg-gradient-to-br from-white/[0.05] to-white/[0.02] border border-white/[0.1] rounded-xl p-6 hover:border-primary/30 hover:shadow-[0_0_30px_rgba(168,85,247,0.15)] transition-all duration-300 cursor-grab active:cursor-grabbing group">
+                              <div className="absolute top-0 left-0 h-full w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity rounded-l-xl" />
 
-                              <h4 className="text-lg font-light text-white mb-4">{deal.title}</h4>
-
-                              <div className="flex items-baseline justify-between mb-4">
-                                <span className="text-2xl font-light text-primary">
+                              <div className="mb-5">
+                                <h4 className="text-lg font-medium text-white mb-2 leading-tight">{deal.title}</h4>
+                                <div className="text-3xl font-light text-primary mb-3">
                                   ${deal.value.toLocaleString()}
-                                </span>
-                                <div className="px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.08]">
-                                  <span className="text-xs text-white/50">{deal.probability}%</span>
+                                  <span className="text-sm text-white/40 ml-2">{deal.probability}%</span>
                                 </div>
                               </div>
 
                               {deal.contact && (
-                                <div className="text-sm text-white/50 mb-2">
-                                  {deal.contact.name}
+                                <div className="mb-4 pb-4 border-b border-white/[0.08]">
+                                  <div className="text-sm font-medium text-white/90">{deal.contact.name}</div>
                                   {deal.contact.company && (
-                                    <span className="text-white/30"> • {deal.contact.company}</span>
+                                    <div className="text-xs text-white/50 mt-1">{deal.contact.company}</div>
                                   )}
                                 </div>
                               )}
 
                               {deal.expected_close_date && (
-                                <div className="text-xs text-white/30 uppercase tracking-[0.15em]">
-                                  Close: {new Date(deal.expected_close_date).toLocaleDateString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    year: 'numeric'
-                                  })}
+                                <div className="flex items-center gap-2 text-xs text-white/40">
+                                  <span className="uppercase tracking-wider">Close:</span>
+                                  <span className="text-white/60">
+                                    {new Date(deal.expected_close_date).toLocaleDateString('en-US', {
+                                      month: 'short',
+                                      day: 'numeric',
+                                      year: 'numeric'
+                                    })}
+                                  </span>
                                 </div>
                               )}
                             </div>

@@ -36,17 +36,43 @@ export async function getCustomerRequests(walletAddress: string): Promise<DataAc
 
 // Get pending requests for customer
 export async function getPendingCustomerRequests(walletAddress: string): Promise<DataAccessRequest[]> {
-  const supabase = createClient()
-
-  const { data, error } = await supabase
-    .from("ownbase_data_access_requests")
-    .select("*")
-    .eq("customer_wallet", walletAddress)
-    .eq("status", "pending")
-    .order("created_at", { ascending: false })
-
-  if (error) throw error
-  return data || []
+  // DEMO: Return mock pending requests
+  return [
+    {
+      id: "req1",
+      business_user_id: "business1",
+      customer_wallet: walletAddress,
+      customer_name: "Demo User",
+      requested_fields: ["name", "email", "phone"],
+      access_duration_days: 30,
+      payment_amount: 5.0,
+      payment_currency: "DOT",
+      status: "pending",
+      approved_at: null,
+      expires_at: null,
+      transaction_hash: null,
+      contract_address: null,
+      created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "req2",
+      business_user_id: "business2",
+      customer_wallet: walletAddress,
+      customer_name: "Demo User",
+      requested_fields: ["email", "company", "job_title"],
+      access_duration_days: 60,
+      payment_amount: 8.0,
+      payment_currency: "DOT",
+      status: "pending",
+      approved_at: null,
+      expires_at: null,
+      transaction_hash: null,
+      contract_address: null,
+      created_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  ]
 }
 
 // Get all data access requests created by the business user
@@ -219,23 +245,43 @@ export function isAccessValid(request: DataAccessRequest): boolean {
 
 // Get active (approved and not expired) requests
 export async function getActiveRequests(walletAddress: string): Promise<DataAccessRequest[]> {
-  const supabase = createClient()
-
-  const { data, error } = await supabase
-    .from("ownbase_data_access_requests")
-    .select("*")
-    .eq("customer_wallet", walletAddress)
-    .eq("status", "approved")
-    .order("created_at", { ascending: false })
-
-  if (error) throw error
-
-  // Filter out expired ones
-  const now = new Date()
-  return (data || []).filter(request => {
-    if (!request.expires_at) return false
-    return new Date(request.expires_at) > now
-  })
+  // DEMO: Return mock active requests
+  return [
+    {
+      id: "req3",
+      business_user_id: "business3",
+      customer_wallet: walletAddress,
+      customer_name: "Demo User",
+      requested_fields: ["name", "email"],
+      access_duration_days: 30,
+      payment_amount: 5.0,
+      payment_currency: "DOT",
+      status: "approved",
+      approved_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      expires_at: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000).toISOString(),
+      transaction_hash: "0x1234567890abcdef",
+      contract_address: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+      created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: "req4",
+      business_user_id: "business4",
+      customer_wallet: walletAddress,
+      customer_name: "Demo User",
+      requested_fields: ["email", "phone", "company"],
+      access_duration_days: 60,
+      payment_amount: 10.0,
+      payment_currency: "DOT",
+      status: "approved",
+      approved_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+      expires_at: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+      transaction_hash: "0xabcdef1234567890",
+      contract_address: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+      created_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+      updated_at: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  ]
 }
 
 // Get request statistics

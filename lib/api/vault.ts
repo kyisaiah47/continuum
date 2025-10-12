@@ -21,34 +21,74 @@ export interface VaultCategory {
 
 // Get all vault data for the current user, organized by category
 export async function getVaultData(): Promise<VaultCategory[]> {
-  const supabase = createClient()
-
-  const userId = getSessionUserId()
-  if (!userId) throw new Error("Not authenticated")
-
-  const { data, error } = await supabase
-    .from("ownbase_data_vault")
-    .select("*")
-    .eq("user_id", userId)
-    .order("category", { ascending: true })
-    .order("field_name", { ascending: true })
-
-  if (error) throw error
-
-  // Group by category
-  const categories: Record<string, VaultField[]> = {}
-
-  data?.forEach((field) => {
-    if (!categories[field.category]) {
-      categories[field.category] = []
-    }
-    categories[field.category].push(field)
-  })
-
-  return Object.entries(categories).map(([category, fields]) => ({
-    category,
-    fields,
-  }))
+  // DEMO: Return mock data
+  return [
+    {
+      category: "Personal Information",
+      fields: [
+        {
+          id: "1",
+          user_id: "demo",
+          category: "Personal Information",
+          field_name: "Full Name",
+          field_value: "Demo User",
+          is_shared: true,
+          shared_count: 3,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        {
+          id: "2",
+          user_id: "demo",
+          category: "Personal Information",
+          field_name: "Email Address",
+          field_value: "demo@continuum.app",
+          is_shared: true,
+          shared_count: 5,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        {
+          id: "3",
+          user_id: "demo",
+          category: "Personal Information",
+          field_name: "Phone Number",
+          field_value: "+1 (555) 123-4567",
+          is_shared: false,
+          shared_count: 0,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ],
+    },
+    {
+      category: "Professional Information",
+      fields: [
+        {
+          id: "4",
+          user_id: "demo",
+          category: "Professional Information",
+          field_name: "Company",
+          field_value: "Continuum Labs",
+          is_shared: true,
+          shared_count: 2,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+        {
+          id: "5",
+          user_id: "demo",
+          category: "Professional Information",
+          field_name: "Job Title",
+          field_value: "Product Manager",
+          is_shared: true,
+          shared_count: 2,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ],
+    },
+  ]
 }
 
 // Get a specific vault field
