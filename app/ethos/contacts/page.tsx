@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, GlassCard } from "@/components/ui/plural"
-import { ProductSwitcher } from "@/components/product-switcher"
+import { EthosHeader } from "@/components/ethos-header"
 import { Search, Plus, Mail, Phone, Loader2, User, Building2 } from "lucide-react"
 import { getContacts, searchContacts } from "@/lib/api/contacts"
 import { ContactDialog } from "@/components/contact-dialog"
@@ -50,22 +50,7 @@ export default function ContactsPage() {
   return (
     <GridBackground showCorners className="min-h-screen">
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
-        <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
-          <ProductSwitcher />
-
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/ethos/dashboard" className="text-sm text-white/60 hover:text-white transition tracking-wide">Dashboard</Link>
-            <Link href="/ethos/contacts" className="text-sm text-primary transition tracking-wide">Contacts</Link>
-            <Link href="/ethos/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
-            <Link href="/ethos/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
-            <div className="h-6 w-px bg-white/[0.08]" />
-            <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/ethos/data-access">Request Data</Link>
-            </ButtonPurple>
-          </nav>
-        </div>
-      </header>
+      <EthosHeader currentPage="contacts" />
 
       {/* Main Content */}
       <main className="pt-32 pb-16 px-8">

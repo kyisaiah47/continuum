@@ -3,8 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard } from "@/components/ui/plural"
-import { ProductSwitcher } from "@/components/product-switcher"
-import { ContinuumLogo } from "@/components/brand/continuum-logo"
+import { EthosHeader } from "@/components/ethos-header"
 import { Plus, DollarSign, TrendingUp, Loader2, Briefcase } from "lucide-react"
 import { getDealsWithContacts, updateDealStage, getPipelineStats } from "@/lib/api/deals"
 import { DealDialog } from "@/components/deal-dialog"
@@ -114,31 +113,7 @@ export default function DealsPage() {
 
   return (
     <GridBackground showCorners className="min-h-screen">
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
-        <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 group-hover:bg-primary/20 transition-all p-2">
-              <ContinuumLogo className="h-full w-full text-primary" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-semibold tracking-tight">Continuum</span>
-              <span className="text-[10px] text-white/40 uppercase tracking-[0.15em]">Deals</span>
-            </div>
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/ethos/dashboard" className="text-sm text-white/60 hover:text-white transition tracking-wide">Dashboard</Link>
-            <Link href="/ethos/contacts" className="text-sm text-white/60 hover:text-white transition tracking-wide">Contacts</Link>
-            <Link href="/ethos/deals" className="text-sm text-primary transition tracking-wide">Deals</Link>
-            <Link href="/ethos/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
-            <div className="h-6 w-px bg-white/[0.08]" />
-            <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/ethos/data-access">Request Data</Link>
-            </ButtonPurple>
-          </nav>
-        </div>
-      </header>
+      <EthosHeader currentPage="deals" />
 
       {/* Main Content */}
       <main className="pt-32 pb-16 px-8">
