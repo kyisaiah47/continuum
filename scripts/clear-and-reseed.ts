@@ -11,6 +11,8 @@ async function clearAndReseed() {
 
   // Delete all old data (cascades will handle the rest)
   console.log('1️⃣  Deleting old data...')
+  await supabase.from('ownbase_earnings').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+  await supabase.from('ownbase_data_vault').delete().neq('id', '00000000-0000-0000-0000-000000000000')
   await supabase.from('ownbase_data_access_requests').delete().neq('id', '00000000-0000-0000-0000-000000000000')
   await supabase.from('ownbase_tasks').delete().neq('id', '00000000-0000-0000-0000-000000000000')
   await supabase.from('ownbase_activities').delete().neq('id', '00000000-0000-0000-0000-000000000000')
@@ -318,6 +320,139 @@ async function clearAndReseed() {
     .select()
   console.log(`✅ Created ${accessRequests?.length || 0} data access requests\n`)
 
+  // Create vault data
+  console.log('8️⃣  Creating vault data...')
+  const { data: vaultData, error: vaultError } = await supabase
+    .from('ownbase_data_vault')
+    .insert([
+      {
+        user_id: userId,
+        category: 'Personal Information',
+        field_name: 'Full Name',
+        field_value: 'Demo User',
+        is_shared: true,
+        shared_count: 3
+      },
+      {
+        user_id: userId,
+        category: 'Personal Information',
+        field_name: 'Email Address',
+        field_value: 'demo@continuum.app',
+        is_shared: true,
+        shared_count: 5
+      },
+      {
+        user_id: userId,
+        category: 'Personal Information',
+        field_name: 'Phone Number',
+        field_value: '+1 (555) 123-4567',
+        is_shared: false,
+        shared_count: 0
+      },
+      {
+        user_id: userId,
+        category: 'Personal Information',
+        field_name: 'Date of Birth',
+        field_value: '1990-05-15',
+        is_shared: false,
+        shared_count: 0
+      },
+      {
+        user_id: userId,
+        category: 'Professional Information',
+        field_name: 'Company',
+        field_value: 'Continuum Labs',
+        is_shared: true,
+        shared_count: 2
+      },
+      {
+        user_id: userId,
+        category: 'Professional Information',
+        field_name: 'Job Title',
+        field_value: 'Product Manager',
+        is_shared: true,
+        shared_count: 2
+      },
+      {
+        user_id: userId,
+        category: 'Professional Information',
+        field_name: 'LinkedIn',
+        field_value: 'linkedin.com/in/demouser',
+        is_shared: false,
+        shared_count: 0
+      },
+      {
+        user_id: userId,
+        category: 'Financial Information',
+        field_name: 'Annual Income',
+        field_value: '$120,000',
+        is_shared: false,
+        shared_count: 0
+      },
+      {
+        user_id: userId,
+        category: 'Financial Information',
+        field_name: 'Credit Score',
+        field_value: '750',
+        is_shared: false,
+        shared_count: 0
+      }
+    ])
+    .select()
+
+  if (vaultError) {
+    console.error('❌ Failed to create vault data:', vaultError)
+  } else {
+    console.log(`✅ Created ${vaultData?.length || 0} vault fields\n`)
+  }
+
+  // Create earnings
+  console.log('9️⃣  Creating earnings...')
+  const { data: earnings, error: earningsError } = await supabase
+    .from('ownbase_earnings')
+    .insert([
+      {
+        user_id: userId,
+        request_id: accessRequests![0].id,
+        amount: 5.0,
+        currency: 'DOT',
+        business_name: 'TechCorp Inc.',
+        business_user_id: userId,
+        transaction_hash: '0x1234567890abcdef',
+        status: 'completed',
+        paid_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        user_id: userId,
+        request_id: accessRequests![2].id,
+        amount: 7.5,
+        currency: 'DOT',
+        business_name: 'Dev Consulting',
+        business_user_id: userId,
+        transaction_hash: '0xabcdef1234567890',
+        status: 'completed',
+        paid_at: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString()
+      },
+      {
+        user_id: userId,
+        request_id: accessRequests![1].id,
+        amount: 10.0,
+        currency: 'DOT',
+        business_name: 'StartupHub',
+        business_user_id: userId,
+        transaction_hash: null,
+        status: 'pending',
+        paid_at: null
+      }
+    ])
+    .select()
+
+  if (earningsError) {
+    console.error('❌ Failed to create earnings:', earningsError)
+  } else {
+    console.log(`✅ Created ${earnings?.length || 0} earnings records\n`)
+  }
+
   console.log('✅ RESEEDING COMPLETE!\n')
   console.log('📊 Summary:')
   console.log(`   - User: demo@continuum.app`)
@@ -326,6 +461,8 @@ async function clearAndReseed() {
   console.log(`   - Activities: ${activities?.length || 0}`)
   console.log(`   - Tasks: ${tasks?.length || 0}`)
   console.log(`   - Access Requests: ${accessRequests?.length || 0}`)
+  console.log(`   - Vault Fields: ${vaultData?.length || 0}`)
+  console.log(`   - Earnings: ${earnings?.length || 0}`)
   console.log('\n🎉 Database is ready!')
 }
 
