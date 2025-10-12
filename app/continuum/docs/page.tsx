@@ -11,25 +11,29 @@ export default function ContinuumDocs() {
       title: "Getting Started",
       icon: Rocket,
       description: "Set up your development environment and deploy your first contract",
-      topics: ["Installation", "Project Setup", "First Contract", "Local Testing"]
+      topics: ["Installation", "Project Setup", "First Contract", "Local Testing"],
+      href: "/continuum/docs/getting-started"
     },
     {
       title: "Smart Contracts",
       icon: Code,
       description: "Write and deploy ink! smart contracts for privacy-preserving data access",
-      topics: ["Contract Structure", "Storage & Events", "Cross-Contract Calls", "Upgrades"]
+      topics: ["Contract Structure", "Storage & Events", "Cross-Contract Calls", "Upgrades"],
+      href: "/continuum/docs/smart-contracts"
     },
     {
       title: "SDK Reference",
       icon: Terminal,
       description: "Complete API reference for the Continuum TypeScript/JavaScript SDK",
-      topics: ["Client Setup", "Contract Interaction", "Event Listeners", "Error Handling"]
+      topics: ["Client Setup", "Contract Interaction", "Event Listeners", "Error Handling"],
+      href: "/continuum/docs/sdk-reference"
     },
     {
       title: "Security Best Practices",
       icon: Shield,
       description: "Learn how to build secure and auditable privacy infrastructure",
-      topics: ["Access Control", "Input Validation", "Reentrancy Guards", "Testing"]
+      topics: ["Access Control", "Input Validation", "Reentrancy Guards", "Testing"],
+      href: "/continuum/docs/security"
     },
   ]
 
@@ -53,8 +57,9 @@ export default function ContinuumDocs() {
           {/* Guide Cards */}
           <div className="mt-16 grid grid-cols-2 gap-6 mb-16">
             {guides.map((guide, i) => (
-              <div
+              <Link
                 key={i}
+                href={guide.href}
                 className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8 hover:bg-white/[0.05] transition-all group cursor-pointer"
               >
                 <div className="flex items-start gap-6 mb-6">
@@ -78,7 +83,7 @@ export default function ContinuumDocs() {
                     </span>
                   ))}
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 

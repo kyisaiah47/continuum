@@ -128,7 +128,7 @@ export default function ContinuumApiKeys() {
             <div className="mt-16 text-center py-20">
               <Key className="h-16 w-16 mx-auto mb-4 text-white/20" />
               <p className="text-white/40 mb-4">No API keys yet</p>
-              <ButtonPurple onClick={() => setCreateDialogOpen(true)}>
+              <ButtonPurple className="h-12 px-6 text-base" onClick={() => setCreateDialogOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Your First Key
               </ButtonPurple>

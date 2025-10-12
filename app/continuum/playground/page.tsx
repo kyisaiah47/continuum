@@ -143,7 +143,7 @@ mod data_access {
           {/* Contract Interaction */}
           <div className="mt-16 grid grid-cols-2 gap-6">
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8">
-              <h3 className="text-xl font-light text-white mb-6">request_access</h3>
+              <h3 className="text-xl font-light text-white mb-6">Request Data Access</h3>
               <div className="space-y-4">
                 <div>
                   <label className="text-sm text-white/40 uppercase tracking-[0.15em] mb-2 block">Customer Address</label>
@@ -177,7 +177,7 @@ mod data_access {
             </div>
 
             <div className="bg-white/[0.03] border border-white/[0.08] rounded-lg p-8">
-              <h3 className="text-xl font-light text-white mb-6">approve_request</h3>
+              <h3 className="text-xl font-light text-white mb-6">Approve Access Request</h3>
               <div className="space-y-4">
                 <div>
                   <label className="text-sm text-white/40 uppercase tracking-[0.15em] mb-2 block">Company Address</label>

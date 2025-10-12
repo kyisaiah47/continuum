@@ -1,12 +1,24 @@
+"use client"
+
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { LogOut } from "lucide-react"
 import { ProductSwitcher } from "@/components/product-switcher"
 import { ButtonPurple } from "@/components/ui/plural"
+import { supabase } from "@/lib/supabase/client"
 
 interface ContinuumHeaderProps {
   currentPage?: 'dashboard' | 'contracts' | 'explorer' | 'api-keys' | 'docs' | 'playground'
 }
 
 export function ContinuumHeader({ currentPage }: ContinuumHeaderProps) {
+  const router = useRouter()
+
+  async function handleLogout() {
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
   return (
     <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
       <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
@@ -57,6 +69,13 @@ export function ContinuumHeader({ currentPage }: ContinuumHeaderProps) {
           <ButtonPurple className="h-9 px-5 text-sm" asChild>
             <Link href="/continuum/playground">Playground</Link>
           </ButtonPurple>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition tracking-wide"
+          >
+            <LogOut className="h-4 w-4" />
+            Logout
+          </button>
         </nav>
       </div>
     </header>
