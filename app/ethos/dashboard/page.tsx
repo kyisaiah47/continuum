@@ -1,33 +1,96 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { GridBackground, SectionDivider, ButtonPurple, StatCard, GlassCard } from "@/components/ui/plural"
-import { ProductSwitcher } from "@/components/product-switcher"
+import { EthosHeader } from "@/components/ethos-header"
 import {
   Users, Briefcase, TrendingUp, CheckSquare,
-  Plus, ArrowRight, Activity, DollarSign
+  Plus, ArrowRight, Activity, DollarSign, Loader2
 } from "lucide-react"
+import { getContacts } from "@/lib/api/contacts"
+import { getPipelineStats, getDealsWithContacts } from "@/lib/api/deals"
+import { getUpcomingTasks } from "@/lib/api/tasks"
 
 export default function DashboardPage() {
+  const [stats, setStats] = useState({
+    totalContacts: 0,
+    pipelineValue: 0,
+    activeDeals: 0,
+    tasksDue: 0
+  })
+  const [recentContacts, setRecentContacts] = useState<any[]>([])
+  const [recentDeals, setRecentDeals] = useState<any[]>([])
+  const [pipelineStats, setPipelineStats] = useState({
+    totalValue: 0,
+    wonValue: 0,
+    wonDeals: 0,
+    activeDeals: 0
+  })
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    loadDashboardData()
+  }, [])
+
+  async function loadDashboardData() {
+    try {
+      setIsLoading(true)
+      const [contacts, pipelineData, deals, tasks] = await Promise.all([
+        getContacts(),
+        getPipelineStats(),
+        getDealsWithContacts(),
+        getUpcomingTasks(20)
+      ])
+
+      setStats({
+        totalContacts: contacts.length,
+        pipelineValue: pipelineData.totalValue,
+        activeDeals: pipelineData.activeDeals,
+        tasksDue: tasks.filter(t => !t.completed).length
+      })
+
+      setRecentContacts(contacts.slice(0, 3))
+      setRecentDeals(deals.slice(0, 3))
+      setPipelineStats(pipelineData)
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  function formatCurrency(value: number) {
+    if (value >= 1000000) {
+      return `$${(value / 1000000).toFixed(1)}M`
+    } else if (value >= 1000) {
+      return `$${(value / 1000).toFixed(0)}K`
+    }
+    return `$${value}`
+  }
+
+  function formatTimeAgo(date: string) {
+    const now = new Date()
+    const created = new Date(date)
+    const diffMs = now.getTime() - created.getTime()
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffDays = Math.floor(diffHours / 24)
+
+    if (diffDays > 0) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`
+    } else if (diffHours > 0) {
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`
+    }
+    return 'Just now'
+  }
+
+  const winRate = pipelineStats.activeDeals + pipelineStats.wonDeals > 0
+    ? Math.round((pipelineStats.wonDeals / (pipelineStats.activeDeals + pipelineStats.wonDeals)) * 100)
+    : 0
+
   return (
     <GridBackground showCorners className="min-h-screen">
-      {/* Header */}
-      <header className="fixed top-0 w-full z-50 border-b border-white/[0.08] bg-background/80 backdrop-blur-xl">
-        <div className="max-w-[1400px] mx-auto px-8 h-20 flex items-center justify-between">
-          <ProductSwitcher />
-
-          <nav className="hidden md:flex items-center gap-8">
-            <Link href="/ethos/dashboard" className="text-sm text-primary transition tracking-wide">Dashboard</Link>
-            <Link href="/ethos/contacts" className="text-sm text-white/60 hover:text-white transition tracking-wide">Contacts</Link>
-            <Link href="/ethos/deals" className="text-sm text-white/60 hover:text-white transition tracking-wide">Deals</Link>
-            <Link href="/ethos/activities" className="text-sm text-white/60 hover:text-white transition tracking-wide">Activities</Link>
-            <div className="h-6 w-px bg-white/[0.08]" />
-            <ButtonPurple className="h-9 px-5 text-sm" asChild>
-              <Link href="/ethos/data-access">Request Data</Link>
-            </ButtonPurple>
-          </nav>
-        </div>
-      </header>
+      <EthosHeader currentPage="dashboard" />
 
       {/* Main Content */}
       <main className="pt-32 pb-16 px-8">
@@ -43,12 +106,22 @@ export default function DashboardPage() {
           </div>
 
           {/* Stats Grid */}
-          <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
-            <StatCard value="156" label="Total Contacts" />
-            <StatCard value="$45K" label="Pipeline Value" />
-            <StatCard value="23" label="Active Deals" />
-            <StatCard value="12" label="Tasks Due" />
-          </div>
+          {isLoading ? (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              {[1,2,3,4].map(i => (
+                <div key={i} className="p-8 flex flex-col items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="glass-card rounded-none border-y border-white/[0.03] grid grid-cols-4 divide-x divide-white/[0.03] mb-16">
+              <StatCard value={stats.totalContacts.toString()} label="Total Contacts" />
+              <StatCard value={formatCurrency(stats.pipelineValue)} label="Pipeline Value" />
+              <StatCard value={stats.activeDeals.toString()} label="Active Deals" />
+              <StatCard value={stats.tasksDue.toString()} label="Tasks Due" />
+            </div>
+          )}
 
           <SectionDivider label="Overview" />
 
@@ -112,19 +185,27 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {[
-                  { name: 'Sarah Johnson', company: 'Acme Corp', time: '2 hours ago' },
-                  { name: 'Mike Chen', company: 'TechStart', time: '5 hours ago' },
-                  { name: 'Emma Davis', company: 'InnovateCo', time: '1 day ago' },
-                ].map((contact, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
-                    <div>
-                      <div className="text-base text-white mb-1">{contact.name}</div>
-                      <div className="text-sm text-white/40">{contact.company}</div>
-                    </div>
-                    <div className="text-xs text-white/30 uppercase tracking-[0.15em]">{contact.time}</div>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
-                ))}
+                ) : recentContacts.length === 0 ? (
+                  <div className="text-center py-8 text-white/40">
+                    No contacts yet
+                  </div>
+                ) : (
+                  recentContacts.map((contact) => (
+                    <div key={contact.id} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
+                      <div>
+                        <div className="text-base text-white mb-1">{contact.name}</div>
+                        <div className="text-sm text-white/40">{contact.company || contact.email}</div>
+                      </div>
+                      <div className="text-xs text-white/30 uppercase tracking-[0.15em]">
+                        {formatTimeAgo(contact.created_at)}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
 
@@ -137,19 +218,27 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <div className="space-y-4">
-                {[
-                  { title: 'Enterprise License', value: '$50,000', stage: 'Proposal' },
-                  { title: 'Annual Subscription', value: '$12,000', stage: 'Negotiation' },
-                  { title: 'Professional Plan', value: '$8,500', stage: 'Demo' },
-                ].map((deal, i) => (
-                  <div key={i} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
-                    <div>
-                      <div className="text-base text-white mb-1">{deal.title}</div>
-                      <div className="text-sm text-white/40">{deal.stage}</div>
-                    </div>
-                    <div className="text-base text-primary font-light">{deal.value}</div>
+                {isLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
                   </div>
-                ))}
+                ) : recentDeals.length === 0 ? (
+                  <div className="text-center py-8 text-white/40">
+                    No deals yet
+                  </div>
+                ) : (
+                  recentDeals.map((deal) => (
+                    <div key={deal.id} className="flex items-center justify-between py-3 border-b border-white/[0.05] last:border-0">
+                      <div>
+                        <div className="text-base text-white mb-1">{deal.title}</div>
+                        <div className="text-sm text-white/40 capitalize">{deal.stage?.replace('_', ' ')}</div>
+                      </div>
+                      <div className="text-base text-primary font-light">
+                        {formatCurrency(Number(deal.value))}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
@@ -157,37 +246,56 @@ export default function DashboardPage() {
           <SectionDivider label="Pipeline Performance" className="mt-24" />
 
           {/* Pipeline Stats */}
-          <div className="mt-16 grid md:grid-cols-3 gap-6">
-            <GlassCard className="p-12">
-              <DollarSign className="h-10 w-10 text-primary mb-6" />
-              <div className="text-5xl font-light text-white mb-2">$127K</div>
-              <div className="text-sm text-white/40 uppercase tracking-[0.15em]">Total Pipeline</div>
-              <div className="mt-6 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-green-500">+18% this month</span>
-              </div>
-            </GlassCard>
+          {isLoading ? (
+            <div className="mt-16 grid md:grid-cols-3 gap-6">
+              {[1,2,3].map(i => (
+                <GlassCard key={i} className="p-12 flex items-center justify-center">
+                  <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </GlassCard>
+              ))}
+            </div>
+          ) : (
+            <div className="mt-16 grid md:grid-cols-3 gap-6">
+              <GlassCard className="p-12">
+                <DollarSign className="h-10 w-10 text-primary mb-6" />
+                <div className="text-5xl font-light text-white mb-2">
+                  {formatCurrency(pipelineStats.totalValue)}
+                </div>
+                <div className="text-sm text-white/40 uppercase tracking-[0.15em]">Total Pipeline</div>
+                {pipelineStats.activeDeals > 0 && (
+                  <div className="mt-6 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <span className="text-sm text-green-500">{pipelineStats.activeDeals} active deals</span>
+                  </div>
+                )}
+              </GlassCard>
 
-            <GlassCard className="p-12">
-              <Briefcase className="h-10 w-10 text-primary mb-6" />
-              <div className="text-5xl font-light text-white mb-2">68%</div>
-              <div className="text-sm text-white/40 uppercase tracking-[0.15em]">Win Rate</div>
-              <div className="mt-6 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-green-500">+5% from last quarter</span>
-              </div>
-            </GlassCard>
+              <GlassCard className="p-12">
+                <Briefcase className="h-10 w-10 text-primary mb-6" />
+                <div className="text-5xl font-light text-white mb-2">{winRate}%</div>
+                <div className="text-sm text-white/40 uppercase tracking-[0.15em]">Win Rate</div>
+                <div className="mt-6 flex items-center gap-2">
+                  <span className="text-sm text-white/60">
+                    {pipelineStats.wonDeals} won / {pipelineStats.activeDeals + pipelineStats.wonDeals} total
+                  </span>
+                </div>
+              </GlassCard>
 
-            <GlassCard className="p-12">
-              <CheckSquare className="h-10 w-10 text-primary mb-6" />
-              <div className="text-5xl font-light text-white mb-2">24</div>
-              <div className="text-sm text-white/40 uppercase tracking-[0.15em]">Days Avg Close</div>
-              <div className="mt-6 flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-green-500">-3 days improvement</span>
-              </div>
-            </GlassCard>
-          </div>
+              <GlassCard className="p-12">
+                <CheckSquare className="h-10 w-10 text-primary mb-6" />
+                <div className="text-5xl font-light text-white mb-2">
+                  {formatCurrency(pipelineStats.wonValue)}
+                </div>
+                <div className="text-sm text-white/40 uppercase tracking-[0.15em]">Revenue Closed</div>
+                {pipelineStats.wonDeals > 0 && (
+                  <div className="mt-6 flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <span className="text-sm text-green-500">{pipelineStats.wonDeals} deals won</span>
+                  </div>
+                )}
+              </GlassCard>
+            </div>
+          )}
         </div>
       </main>
 
