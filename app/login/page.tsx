@@ -74,6 +74,19 @@ export default function LoginPage() {
             </p>
           </div>
 
+          {/* Demo Credentials Banner */}
+          <div className="mb-6 px-4 py-3 bg-primary/5 border border-primary/20 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-xs">🎯</span>
+              <span className="text-xs font-medium text-white/90">Demo Account</span>
+            </div>
+            <div className="flex items-center gap-4 text-xs text-white/60">
+              <span><span className="text-white/40">Email:</span> <code className="text-primary">demo@continuum.app</code></span>
+              <span className="text-white/20">•</span>
+              <span><span className="text-white/40">Password:</span> <code className="text-primary">demo123456</code></span>
+            </div>
+          </div>
+
           <form onSubmit={handleLogin} className="space-y-6">
             {/* Email Field */}
             <div>
@@ -151,31 +164,6 @@ export default function LoginPage() {
                 Sign up
               </Link>
             </p>
-          </div>
-        </div>
-
-        {/* Demo Credentials */}
-        <div className="mt-6 glass-card p-6 rounded-lg border border-primary/20">
-          <div className="flex items-start gap-3">
-            <div className="flex-shrink-0 mt-0.5">
-              <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                <span className="text-primary text-xs">🎯</span>
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-sm font-medium text-white mb-1">Demo Credentials</h3>
-              <p className="text-xs text-white/50 mb-3">Try the platform with our demo account</p>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between px-3 py-2 bg-white/[0.03] border border-white/[0.08] rounded">
-                  <span className="text-xs text-white/40">Email:</span>
-                  <code className="text-xs text-primary font-mono">demo@continuum.app</code>
-                </div>
-                <div className="flex items-center justify-between px-3 py-2 bg-white/[0.03] border border-white/[0.08] rounded">
-                  <span className="text-xs text-white/40">Password:</span>
-                  <code className="text-xs text-primary font-mono">demo123456</code>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
