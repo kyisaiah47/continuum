@@ -23,13 +23,9 @@ export interface VaultCategory {
 export async function getVaultData(): Promise<VaultCategory[]> {
   const supabase = createClient()
 
-  const userId = getSessionUserId()
-  if (!userId) throw new Error("Not authenticated")
-
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .select("*")
-    .eq("user_id", userId)
     .order("category", { ascending: true })
     .order("field_name", { ascending: true })
 
@@ -111,8 +107,8 @@ export async function createVaultField(
 ): Promise<VaultField> {
   const supabase = createClient()
 
-  const userId = getSessionUserId()
-  if (!userId) throw new Error("Not authenticated")
+  // DEMO: Use demo user ID
+  const userId = '02a107d2-8df2-46d4-88df-33bd83733e73'
 
   const { data, error } = await supabase
     .from("ownbase_data_vault")
@@ -143,8 +139,8 @@ export async function deleteVaultField(fieldId: string): Promise<void> {
 export async function seedDefaultVaultFields(): Promise<void> {
   const supabase = createClient()
 
-  const userId = getSessionUserId()
-  if (!userId) throw new Error("Not authenticated")
+  // DEMO: Use demo user ID
+  const userId = '02a107d2-8df2-46d4-88df-33bd83733e73'
 
   const { error } = await supabase.rpc("seed_default_vault_fields", {
     p_user_id: userId,
@@ -157,13 +153,9 @@ export async function seedDefaultVaultFields(): Promise<void> {
 export async function getSharedFields(): Promise<VaultField[]> {
   const supabase = createClient()
 
-  const userId = getSessionUserId()
-  if (!userId) throw new Error("Not authenticated")
-
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .select("*")
-    .eq("user_id", userId)
     .eq("is_shared", true)
     .order("category", { ascending: true })
 
@@ -175,13 +167,9 @@ export async function getSharedFields(): Promise<VaultField[]> {
 export async function getVaultStats() {
   const supabase = createClient()
 
-  const userId = getSessionUserId()
-  if (!userId) throw new Error("Not authenticated")
-
   const { data, error } = await supabase
     .from("ownbase_data_vault")
     .select("is_shared, field_value")
-    .eq("user_id", userId)
 
   if (error) throw error
 
