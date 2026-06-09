@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="public/hero-screenshot.png" alt="Continuum" width="100%">
+<img src="assets/banner.png" alt="banner" width="100%" />
 
 # 🔗 Continuum
 
