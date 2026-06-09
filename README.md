@@ -9,6 +9,9 @@
 
 **📹 [Watch Demo Video](https://youtu.be/DrZ8aSibqEQ?si=Buh7WHzPLlPZ0cUp)** | Built for the Polkadot Cloud Hackathon 2025
 
+
+[![Watch Demo](https://img.shields.io/badge/YouTube-Watch%20Demo-FF0000?style=flat&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=DrZ8aSibqEQ)
+
 ---
 
 ## 🎯 The Problem
